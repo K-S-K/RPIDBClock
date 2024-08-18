@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>RPIDBClock.NET</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IntermediateOutputPath>..\..\Obj\$(Configuration)Net</IntermediateOutputPath>
+    <OutputPath>..\..\Bin\$(Configuration)\</OutputPath>
+  </PropertyGroup>
+
+</Project>
