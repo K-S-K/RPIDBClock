@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdc-svc", "rdc-svc\rdc-svc.csproj", "{21561C17-784F-4D11-B3C6-A1B6F40B822F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdc-rtc", "rdc-rtc\rdc-rtc.csproj", "{508B63F9-F500-4ED0-9D27-A1F9F1872BFB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdc-lcd", "rdc-lcd\rdc-lcd.csproj", "{1209BD2C-2102-4399-A3D9-EA4DEF2A9592}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{21561C17-784F-4D11-B3C6-A1B6F40B822F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21561C17-784F-4D11-B3C6-A1B6F40B822F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21561C17-784F-4D11-B3C6-A1B6F40B822F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21561C17-784F-4D11-B3C6-A1B6F40B822F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{508B63F9-F500-4ED0-9D27-A1F9F1872BFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{508B63F9-F500-4ED0-9D27-A1F9F1872BFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{508B63F9-F500-4ED0-9D27-A1F9F1872BFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{508B63F9-F500-4ED0-9D27-A1F9F1872BFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1209BD2C-2102-4399-A3D9-EA4DEF2A9592}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1209BD2C-2102-4399-A3D9-EA4DEF2A9592}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1209BD2C-2102-4399-A3D9-EA4DEF2A9592}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1209BD2C-2102-4399-A3D9-EA4DEF2A9592}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
