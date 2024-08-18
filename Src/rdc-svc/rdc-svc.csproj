@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\rdc-rtc\rdc-rtc.csproj" />
+    <ProjectReference Include="..\rdc-lcd\rdc-lcd.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
