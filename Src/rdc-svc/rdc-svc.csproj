@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>RPIDBClock.Svc</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IntermediateOutputPath>..\..\Obj\$(Configuration)</IntermediateOutputPath>
+    <OutputPath>..\..\Bin\$(Configuration)\Svc</OutputPath>
+  </PropertyGroup>
+
+</Project>
