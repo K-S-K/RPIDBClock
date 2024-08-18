@@ -1,9 +1,34 @@
-﻿namespace RPIDBClock.Svc;
+﻿using RPIDBClock.RTC;
 
+namespace RPIDBClock.Svc;
+
+/// <summary>
+/// Represents the entry point for the application.
+/// </summary>
 internal class Program
 {
+    /// <summary>
+    /// The I2C address of the DS3231 RTC module.
+    /// </summary>
+    private const byte DS3231_ADDRESS = 0x68;
+
+    /// <summary>
+    /// The main method of the application.
+    /// </summary>
+    /// <param name="args">The command-line arguments.</param>
     private static void Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
+        // Create a new instance of the DS3231 real-time clock.
+        DS3231 rtc = new(DS3231_ADDRESS);
+
+        // Display a greeting message.
+        Console.WriteLine("Hello, Raspberry PI!");
+
+        // Read the current time and temperature from the RTC module.
+        for (int i = 0; i < 10; i++)
+        {
+            Console.WriteLine($"Time: {rtc.ReadTime():yyyy.MM.dd HH:mm:ss}  Temperature: {rtc.ReadTemperature()}°C");
+            Thread.Sleep(1000);
+        }
     }
 }
