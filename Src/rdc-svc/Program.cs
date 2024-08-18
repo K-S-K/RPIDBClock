@@ -1,5 +1,6 @@
 ﻿using RPIDBClock.LCD;
 using RPIDBClock.RTC;
+using RPIDBClock.NET;
 
 namespace RPIDBClock.Svc;
 
@@ -34,13 +35,34 @@ internal class Program
         // Display a greeting message.
         Console.WriteLine("Hello, Raspberry PI!");
 
+        // Get the current network time and set it on the RTC module.
+        DateTime networkTime = NtpClient.GetNetworkTime();
+        rtc.SetTime(networkTime);
+
+        // Create a custom character for the degree symbol (°).
+        byte[] degSymbol =
+        [
+            0b00110,
+            0b01001,
+            0b01001,
+            0b00110,
+            0b00000,
+            0b00000,
+            0b00000,
+            0b00000
+        ];
+        lcd.CreateCustomCharacter(0, degSymbol);
+        lcd.Write(1, 18, "\x00");  // Display the custom character (°)
+        lcd.Write(1, 19, "C");  // Display the temperature unit (C)
+
+
         // Read the current time and temperature from the RTC module.
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 50; i++)
         {
             lcd.SetCursorPosition(0, 0);
             lcd.Write($"{rtc.ReadTime():yyyy.MM.dd HH:mm:ss}");
             lcd.SetCursorPosition(0, 1);
-            lcd.Write($"Temperature: {rtc.ReadTemperature()}°C");
+            lcd.Write($"Temperature: {rtc.ReadTemperature():F2}");
 
             Console.WriteLine($"Time: {rtc.ReadTime():yyyy.MM.dd HH:mm:ss}  Temperature: {rtc.ReadTemperature()}°C");
             Thread.Sleep(1000);
