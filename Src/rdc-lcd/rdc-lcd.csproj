@@ -5,8 +5,8 @@
     <RootNamespace>RPIDBClock.LCD</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <IntermediateOutputPath>..\..\Obj\$(Configuration)</IntermediateOutputPath>
-    <OutputPath>..\..\Bin\$(Configuration)\Lcd</OutputPath>
+    <IntermediateOutputPath>..\..\Obj\$(Configuration)Lcd</IntermediateOutputPath>
+    <OutputPath>..\..\Bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

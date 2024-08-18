@@ -5,8 +5,8 @@
     <RootNamespace>RPIDBClock.RTC</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <IntermediateOutputPath>..\..\Obj\$(Configuration)</IntermediateOutputPath>
-    <OutputPath>..\..\Bin\$(Configuration)\Rtc</OutputPath>
+    <IntermediateOutputPath>..\..\Obj\$(Configuration)Rtc</IntermediateOutputPath>
+    <OutputPath>..\..\Bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

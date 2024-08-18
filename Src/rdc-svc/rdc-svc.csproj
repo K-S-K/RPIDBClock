@@ -6,8 +6,8 @@
     <RootNamespace>RPIDBClock.Svc</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <IntermediateOutputPath>..\..\Obj\$(Configuration)</IntermediateOutputPath>
-    <OutputPath>..\..\Bin\$(Configuration)\Svc</OutputPath>
+    <IntermediateOutputPath>..\..\Obj\$(Configuration)Svc</IntermediateOutputPath>
+    <OutputPath>..\..\Bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
 
 </Project>
