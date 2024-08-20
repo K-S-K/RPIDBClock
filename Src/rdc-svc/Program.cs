@@ -19,6 +19,8 @@ internal class Program
     /// </summary>
     private const byte HD44780_ADDRESS = 0x27;
 
+    private static INTPService? ntp;
+
     private static ILCDService? lcd;
 
     private static IRTCService? rtc;
@@ -29,6 +31,9 @@ internal class Program
     /// <param name="args">The command-line arguments.</param>
     private static void Main(string[] args)
     {
+        // Create a new instance of the NTP client.
+        ntp = new NTPService();
+
         // Create a new instance of the DS3231 real-time clock.
         rtc = new RTCService(DS3231_ADDRESS);
 
@@ -40,7 +45,7 @@ internal class Program
         Console.WriteLine("Hello, Raspberry PI!");
 
         // Get the current network time and set it on the RTC module.
-        DateTime networkTime = NtpClient.GetNetworkTime();
+        DateTime networkTime = ntp.GetNetworkTime();
         rtc.WriteTime(networkTime);
 
         // Create a custom character for the degree symbol (°).
