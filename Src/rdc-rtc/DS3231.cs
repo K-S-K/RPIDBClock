@@ -5,7 +5,7 @@ namespace RPIDBClock.RTC;
 /// <summary>
 ///Real Time Clock
 /// </summary>
-public class DS3231
+public class DS3231 : IDisposable
 {
     /// <summary>
     /// The register address for temperature data in the DS3231 RTC.
@@ -69,7 +69,7 @@ public class DS3231
     /// Sets the time on the DS3231 RTC module.
     /// </summary>
     /// <param name="dateTime">The current time as a DateTime object.</param>
-    public void SetTime(DateTime dateTime)
+    public void WriteTime(DateTime dateTime)
     {
         Span<byte> data = stackalloc byte[8];
 

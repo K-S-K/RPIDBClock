@@ -21,6 +21,8 @@ internal class Program
 
     private static ILCDService? lcd;
 
+    private static IRTCService? rtc;
+
     /// <summary>
     /// The main method of the application.
     /// </summary>
@@ -28,7 +30,7 @@ internal class Program
     private static void Main(string[] args)
     {
         // Create a new instance of the DS3231 real-time clock.
-        DS3231 rtc = new(DS3231_ADDRESS);
+        rtc = new RTCService(DS3231_ADDRESS);
 
         // Create a new instance of the HD44780 LCD display.
         lcd = new LCDService(HD44780_ADDRESS);
@@ -39,7 +41,7 @@ internal class Program
 
         // Get the current network time and set it on the RTC module.
         DateTime networkTime = NtpClient.GetNetworkTime();
-        rtc.SetTime(networkTime);
+        rtc.WriteTime(networkTime);
 
         // Create a custom character for the degree symbol (°).
         byte[] degSymbol =
