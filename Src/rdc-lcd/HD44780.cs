@@ -10,7 +10,7 @@ namespace RPIDBClock.LCD;
 /// It supports various display functions such as clearing the display, returning to home, setting entry mode, controlling display, shifting cursor, and setting custom characters.
 /// The class also allows controlling the display mode, backlight, and various display options such as cursor and blink.
 /// </remarks>
-public class HD44780
+public class HD44780 : IDisposable
 {
     #region -> Constants
     private const byte LCD_CLR = 0x01;
@@ -25,6 +25,7 @@ public class HD44780
     private const byte LCD_BACKLIGHT = 0x08;
     private const byte ENABLE = 0x04;
     #endregion
+
 
     #region -> Fields
     private readonly I2cDevice _i2cDevice;
@@ -46,6 +47,7 @@ public class HD44780
         Initialize();
     }
     #endregion
+
 
     #region -> Properties
     /// <summary>
@@ -88,7 +90,7 @@ public class HD44780
     /// <param name="row">The row index of the cursor position.</param>
     public void SetCursorPosition(int col, int row)
     {
-        int[] rowOffsets = { 0x00, 0x40, 0x14, 0x54 };
+        int[] rowOffsets = [0x00, 0x40, 0x14, 0x54];
         SendCommand((byte)(LCD_DDRAM_ADDR | (col + rowOffsets[row])));
     }
 
@@ -129,6 +131,17 @@ public class HD44780
         {
             SendData(line);
         }
+    }
+
+    /// <summary>
+    /// Disposes the resources used by the LCD display.
+    /// </summary>
+    /// <remarks>
+    /// This method releases the I2C device used by the LCD display.
+    /// </remarks>
+    public void Dispose()
+    {
+        _i2cDevice?.Dispose();
     }
     #endregion
 

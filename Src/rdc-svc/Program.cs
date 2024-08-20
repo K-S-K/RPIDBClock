@@ -19,6 +19,8 @@ internal class Program
     /// </summary>
     private const byte HD44780_ADDRESS = 0x27;
 
+    private static ILCDService? lcd;
+
     /// <summary>
     /// The main method of the application.
     /// </summary>
@@ -29,7 +31,7 @@ internal class Program
         DS3231 rtc = new(DS3231_ADDRESS);
 
         // Create a new instance of the HD44780 LCD display.
-        HD44780 lcd = new(HD44780_ADDRESS);
+        lcd = new LCDService(HD44780_ADDRESS);
         lcd.Clear();
 
         // Display a greeting message.
@@ -59,10 +61,8 @@ internal class Program
         // Read the current time and temperature from the RTC module.
         for (int i = 0; i < 50; i++)
         {
-            lcd.SetCursorPosition(0, 0);
-            lcd.Write($"{rtc.ReadTime():yyyy.MM.dd HH:mm:ss}");
-            lcd.SetCursorPosition(0, 1);
-            lcd.Write($"Temperature: {rtc.ReadTemperature():F2}");
+            lcd.Write(0, 0, $"{rtc.ReadTime():yyyy.MM.dd HH:mm:ss}");
+            lcd.Write(1, 0, $"Temperature: {rtc.ReadTemperature():F2}");
 
             Console.WriteLine($"Time: {rtc.ReadTime():yyyy.MM.dd HH:mm:ss}  Temperature: {rtc.ReadTemperature()}°C");
             Thread.Sleep(1000);
