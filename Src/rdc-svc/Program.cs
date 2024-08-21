@@ -39,40 +39,19 @@ internal class Program
 
         // Create a new instance of the HD44780 LCD display.
         lcd = new LCDService(HD44780_ADDRESS);
-        lcd.Clear();
 
-        // Display a greeting message.
-        Console.WriteLine("Hello, Raspberry PI!");
+        // Create a new instance of the clock.
+        DBClock clock = new(ntp, lcd, rtc);
+        clock.Start();
 
-        // Get the current network time and set it on the RTC module.
-        DateTime networkTime = ntp.GetNetworkTime();
-        rtc.WriteTime(networkTime);
-
-        // Create a custom character for the degree symbol (°).
-        byte[] degSymbol =
-        [
-            0b00110,
-            0b01001,
-            0b01001,
-            0b00110,
-            0b00000,
-            0b00000,
-            0b00000,
-            0b00000
-        ];
-        lcd.CreateCustomCharacter(0, degSymbol);
-        lcd.Write(1, 18, "\x00");  // Display the custom character (°)
-        lcd.Write(1, 19, "C");  // Display the temperature unit (C)
-
-
-        // Read the current time and temperature from the RTC module.
-        for (int i = 0; i < 50; i++)
+        // Wait for 20 seconds.
+        for (int i = 0; i < 20; i++)
         {
-            lcd.Write(0, 0, $"{rtc.ReadTime():yyyy.MM.dd HH:mm:ss}");
-            lcd.Write(1, 0, $"Temperature: {rtc.ReadTemperature():F2}");
-
-            Console.WriteLine($"Time: {rtc.ReadTime():yyyy.MM.dd HH:mm:ss}  Temperature: {rtc.ReadTemperature()}°C");
+            Console.WriteLine($"[{i}]");
             Thread.Sleep(1000);
         }
+
+        clock.Pause();
+        clock.Dispose();
     }
 }
