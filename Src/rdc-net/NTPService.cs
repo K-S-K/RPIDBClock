@@ -21,6 +21,11 @@ public class NTPService : INTPService
     /// when retrieving the current network time.
     /// </remarks>
     private readonly string _ntpServer;
+
+    /// <summary>
+    /// The synchronization object used to lock access to the NTP server.
+    /// </summary>
+    private object _sync = new();
     #endregion
 
 
@@ -38,10 +43,13 @@ public class NTPService : INTPService
     /// <remarks>
     public NTPService(string ntpServer = "pool.ntp.org")
     {
-        ArgumentNullException.ThrowIfNull(ntpServer, nameof(ntpServer));
-        ArgumentException.ThrowIfNullOrWhiteSpace(ntpServer, nameof(ntpServer));
+        lock (_sync)
+        {
+            ArgumentNullException.ThrowIfNull(ntpServer, nameof(ntpServer));
+            ArgumentException.ThrowIfNullOrWhiteSpace(ntpServer, nameof(ntpServer));
 
-        _ntpServer = ntpServer;
+            _ntpServer = ntpServer;
+        }
     }
     #endregion
 
@@ -57,6 +65,23 @@ public class NTPService : INTPService
     /// </remarks>
     public DateTime GetNetworkTime()
     {
+        lock (_sync)
+        {
+            return GetNetworkTime(_ntpServer);
+        }
+    }
+
+    /// <summary>
+    /// Gets the current network time from the specified NTP server.
+    /// </summary>
+    /// <param name="ntpServer">The NTP server to query.</param>
+    /// <returns>The current network time.</returns>
+    /// <remarks>
+    /// This method sends an NTP request to the specified NTP server
+    /// and receives an NTP response containing the current network time.
+    /// </remarks>
+    private DateTime GetNetworkTime(string ntpServer)
+    {
         // The NTP data buffer.
         var ntpData = new byte[48];
 
@@ -64,7 +89,7 @@ public class NTPService : INTPService
         ntpData[0] = 0x1B;
 
         // Get the IP addresses of the NTP server.
-        IPAddress[] addresses = Dns.GetHostAddresses(_ntpServer);
+        IPAddress[] addresses = Dns.GetHostAddresses(ntpServer);
 
         // Create a new IPEndPoint with the first IP address of the NTP server.
         IPEndPoint ipEndPoint = new(addresses[0], 123);

@@ -32,6 +32,11 @@ public class HD44780 : IDisposable
     private byte _displayControl;
     private byte _displayMode;
     private byte _backlight = LCD_BACKLIGHT;
+
+    /// <summary>
+    /// The synchronization object used to lock access to the I2C device.
+    /// </summary>
+    private object _sync = new();
     #endregion
 
 
@@ -41,33 +46,12 @@ public class HD44780 : IDisposable
     /// </summary>
     public HD44780(byte deviceAddress)
     {
-        var settings = new I2cConnectionSettings(1, deviceAddress);
-        _i2cDevice = I2cDevice.Create(settings);
-
-        Initialize();
-    }
-    #endregion
-
-
-    #region -> Properties
-    /// <summary>
-    /// Gets or sets a value indicating whether 
-    /// the backlight of the LCD display is on.
-    /// </summary>
-    public bool DisplayOn
-    {
-        get => (_displayControl & 0x04) != 0;
-        set
+        lock (_sync)
         {
-            if (value)
-            {
-                _displayControl |= 0x04;
-            }
-            else
-            {
-                _displayControl &= 0xFB;
-            }
-            SendCommand((byte)(LCD_DISPLAY_CONTROL | _displayControl));
+            var settings = new I2cConnectionSettings(1, deviceAddress);
+            _i2cDevice = I2cDevice.Create(settings);
+
+            Initialize();
         }
     }
     #endregion
@@ -79,30 +63,10 @@ public class HD44780 : IDisposable
     /// </summary>
     public void Clear()
     {
-        SendCommand(LCD_CLR);
-        Thread.Sleep(2); // Clear command needs a longer delay
-    }
-
-    /// <summary>
-    /// Sets the cursor position on the LCD display.
-    /// </summary>
-    /// <param name="col">The column index of the cursor position.</param>
-    /// <param name="row">The row index of the cursor position.</param>
-    public void SetCursorPosition(int col, int row)
-    {
-        int[] rowOffsets = [0x00, 0x40, 0x14, 0x54];
-        SendCommand((byte)(LCD_DDRAM_ADDR | (col + rowOffsets[row])));
-    }
-
-    /// <summary>
-    /// Writes the specified text to the LCD display.
-    /// </summary>
-    /// <param name="text">The text to be written.</param>
-    public void Write(string text)
-    {
-        foreach (var c in text)
+        lock (_sync)
         {
-            SendData((byte)c);
+            SendCommand(LCD_CLR);
+            Thread.Sleep(2); // Clear command needs a longer delay
         }
     }
 
@@ -114,8 +78,11 @@ public class HD44780 : IDisposable
     /// <param name="text">The text to be written.</param>
     public void Write(int row, int col, string text)
     {
-        SetCursorPosition(col, row);
-        Write(text);
+        lock (_sync)
+        {
+            SetCursorPosition(col, row);
+            Write(text);
+        }
     }
 
     /// <summary>
@@ -125,11 +92,14 @@ public class HD44780 : IDisposable
     /// <param name="charmap">The character map representing the custom character.</param>
     public void CreateCustomCharacter(byte location, byte[] charmap)
     {
-        location &= 0x7; // Only 8 locations available
-        SendCommand((byte)(LCD_CGRAM_ADDR | (location << 3)));
-        foreach (var line in charmap)
+        lock (_sync)
         {
-            SendData(line);
+            location &= 0x7; // Only 8 locations available
+            SendCommand((byte)(LCD_CGRAM_ADDR | (location << 3)));
+            foreach (var line in charmap)
+            {
+                SendData(line);
+            }
         }
     }
 
@@ -141,7 +111,10 @@ public class HD44780 : IDisposable
     /// </remarks>
     public void Dispose()
     {
-        _i2cDevice?.Dispose();
+        lock (_sync)
+        {
+            _i2cDevice?.Dispose();
+        }
     }
     #endregion
 
@@ -161,6 +134,29 @@ public class HD44780 : IDisposable
         SendCommand((byte)(LCD_DISPLAY_CONTROL | _displayControl)); // Display on
         SendCommand((byte)(LCD_CLR)); // Clear display
         SendCommand((byte)(LCD_ENTRY_MODE_SET | _displayMode)); // Entry mode set
+    }
+
+    /// <summary>
+    /// Sets the cursor position on the LCD display.
+    /// </summary>
+    /// <param name="col">The column index of the cursor position.</param>
+    /// <param name="row">The row index of the cursor position.</param>
+    private void SetCursorPosition(int col, int row)
+    {
+        int[] rowOffsets = [0x00, 0x40, 0x14, 0x54];
+        SendCommand((byte)(LCD_DDRAM_ADDR | (col + rowOffsets[row])));
+    }
+
+    /// <summary>
+    /// Writes the specified text to the LCD display.
+    /// </summary>
+    /// <param name="text">The text to be written.</param>
+    private void Write(string text)
+    {
+        foreach (var c in text)
+        {
+            SendData((byte)c);
+        }
     }
 
     /// <summary>
