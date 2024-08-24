@@ -12,10 +12,10 @@ public class I2CSettings
     /// <summary>
     /// Gets or sets the I2C address of the LCD module.
     /// </summary>
-    public string LCDAddress { get; set; }
+    public byte LCDAddress { get; set; }
 
     /// <summary>
     /// Gets or sets the I2C address of the RTC module.
     /// </summary>
-    public string RTCAddress { get; set; }
+    public byte RTCAddress { get; set; }
 }

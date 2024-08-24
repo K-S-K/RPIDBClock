@@ -1,6 +1,7 @@
 ﻿using RPIDBClock.LCD;
 using RPIDBClock.RTC;
 using RPIDBClock.NET;
+using Microsoft.Extensions.Options;
 
 namespace RPIDBClock.Svc;
 
@@ -29,11 +30,22 @@ internal class Program
 
         // Bind I2CSettings section to I2CSettings class
         builder.Services.Configure<I2CSettings>(builder.Configuration.GetSection(nameof(I2CSettings)));
-        var i2cSettings = provider.GetRequiredService<IOptions<I2CSettings>>().Value;
 
-        // Register services
-        builder.Services.AddSingleton<ILCDService>(provider => new LCDService(i2cSettings.LCDAddress));
-        builder.Services.AddSingleton<IRTCService>(provider => new RTCService(i2cSettings.RTCAddress));
+        // Register LCD service
+        builder.Services.AddSingleton<ILCDService>(provider =>
+        {
+            var i2cSettings = provider.GetRequiredService<IOptions<I2CSettings>>().Value;
+            return new LCDService(i2cSettings.LCDAddress);
+        });
+
+        // Register RTC service
+        builder.Services.AddSingleton<IRTCService>(provider =>
+        {
+            var i2cSettings = provider.GetRequiredService<IOptions<I2CSettings>>().Value;
+            return new RTCService(i2cSettings.RTCAddress);
+        });
+
+        // Register NTP and DBClock services
         builder.Services.AddSingleton<INTPService, NTPService>();
         builder.Services.AddSingleton<IDBClock, DBClock>();
 
