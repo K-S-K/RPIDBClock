@@ -1,4 +1,6 @@
-﻿using RPIDBClock.LCD;
+﻿using Microsoft.Extensions.Options;
+
+using RPIDBClock.LCD;
 using RPIDBClock.RTC;
 using RPIDBClock.NET;
 
@@ -10,62 +12,49 @@ namespace RPIDBClock.Svc;
 internal class Program
 {
     /// <summary>
-    /// The I2C address of the DS3231 RTC module.
-    /// </summary>
-    private const byte DS3231_ADDRESS = 0x68;
-
-    /// <summary>
-    /// The I2C address of the HD44780 LCD module.
-    /// </summary>
-    private const byte HD44780_ADDRESS = 0x27;
-
-    /// <summary>
     /// The main method of the application.
     /// </summary>
     /// <param name="args">The command-line arguments.</param>
     private static void Main(string[] args)
     {
-        // Create a new instance of the DS3231 real-time clock.
-        DS3231 rtc = new(DS3231_ADDRESS);
+        var builder = WebApplication.CreateBuilder(args);
 
-        // Create a new instance of the HD44780 LCD display.
-        HD44780 lcd = new(HD44780_ADDRESS);
-        lcd.Clear();
+        // Bind I2CSettings section to I2CSettings class
+        builder.Services.Configure<I2CSettings>(builder.Configuration.GetSection(nameof(I2CSettings)));
 
-        // Display a greeting message.
-        Console.WriteLine("Hello, Raspberry PI!");
-
-        // Get the current network time and set it on the RTC module.
-        DateTime networkTime = NtpClient.GetNetworkTime();
-        rtc.SetTime(networkTime);
-
-        // Create a custom character for the degree symbol (°).
-        byte[] degSymbol =
-        [
-            0b00110,
-            0b01001,
-            0b01001,
-            0b00110,
-            0b00000,
-            0b00000,
-            0b00000,
-            0b00000
-        ];
-        lcd.CreateCustomCharacter(0, degSymbol);
-        lcd.Write(1, 18, "\x00");  // Display the custom character (°)
-        lcd.Write(1, 19, "C");  // Display the temperature unit (C)
-
-
-        // Read the current time and temperature from the RTC module.
-        for (int i = 0; i < 50; i++)
+        // Register LCD service
+        builder.Services.AddSingleton<ILCDService>(provider =>
         {
-            lcd.SetCursorPosition(0, 0);
-            lcd.Write($"{rtc.ReadTime():yyyy.MM.dd HH:mm:ss}");
-            lcd.SetCursorPosition(0, 1);
-            lcd.Write($"Temperature: {rtc.ReadTemperature():F2}");
+            var i2cSettings = provider.GetRequiredService<IOptions<I2CSettings>>().Value;
+            return new LCDService(i2cSettings.LCDAddress);
+        });
 
-            Console.WriteLine($"Time: {rtc.ReadTime():yyyy.MM.dd HH:mm:ss}  Temperature: {rtc.ReadTemperature()}°C");
-            Thread.Sleep(1000);
-        }
+        // Register RTC service
+        builder.Services.AddSingleton<IRTCService>(provider =>
+        {
+            var i2cSettings = provider.GetRequiredService<IOptions<I2CSettings>>().Value;
+            return new RTCService(i2cSettings.RTCAddress);
+        });
+
+        // Register NTP and DBClock services
+        builder.Services.AddSingleton<INTPService, NTPService>();
+        builder.Services.AddSingleton<IDBClock, DBClock>();
+
+        //  Build the application
+        var app = builder.Build();
+
+        // Ressolve and start DBClock service.
+        IDBClock clock = app.Services.GetRequiredService<IDBClock>();
+        clock.Start();
+
+        // Register routes
+        app.MapGet("/", () => "Hello Raspberry PI!");
+
+        // Run the application
+        app.Run();
+
+        // Stop and dispose the clock
+        clock.Pause();
+        clock.Dispose();
     }
 }

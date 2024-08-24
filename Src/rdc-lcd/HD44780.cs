@@ -10,27 +10,114 @@ namespace RPIDBClock.LCD;
 /// It supports various display functions such as clearing the display, returning to home, setting entry mode, controlling display, shifting cursor, and setting custom characters.
 /// The class also allows controlling the display mode, backlight, and various display options such as cursor and blink.
 /// </remarks>
-public class HD44780
+public class HD44780 : IDisposable
 {
     #region -> Constants
+    /// <summary>
+    /// The command to clear the LCD display.
+    /// </summary>
     private const byte LCD_CLR = 0x01;
+
+    /// <summary>
+    /// The command to return to the home position.
+    /// </summary>
+    /// <remarks>
+    /// This command sets the cursor position 
+    /// to the upper-left corner of the display.
+    /// </remarks>
     private const byte LCD_HOME = 0x02;
+
+    /// <summary>
+    /// The command to set the entry mode.
+    /// </summary>
+    /// <remarks>
+    /// This command is used to set the cursor move direction and display shift.
+    /// </remarks>
     private const byte LCD_ENTRY_MODE_SET = 0x04;
+
+    /// <summary>
+    /// The command to control the display.
+    /// </summary>
+    /// <remarks>
+    /// This command is used to control the display, cursor, and blink.
+    /// </remarks>
     private const byte LCD_DISPLAY_CONTROL = 0x08;
+
+    /// <summary>
+    /// The command to shift the cursor.
+    /// </summary>
+    /// <remarks>
+    /// This command is used to shift the cursor position 
+    /// to the left or right without changing the display data.
+    /// </remarks>
     private const byte LCD_CURSOR_SHIFT = 0x10;
+
+    /// <summary>
+    /// The command to set the function.
+    /// </summary>
+    /// <remarks>
+    /// This command is used to set the number of display lines and character font.
+    /// </remarks>
     private const byte LCD_FUNCTION_SET = 0x20;
+
+    /// <summary>
+    /// The command to set the CGRAM address.
+    /// </summary>
     private const byte LCD_CGRAM_ADDR = 0x40;
+
+    /// <summary>
+    /// The command to set the DDRAM address.
+    /// </summary>
     private const byte LCD_DDRAM_ADDR = 0x80;
 
+    /// <summary>
+    /// The command to turn the display off.
+    /// </summary>
     private const byte LCD_BACKLIGHT = 0x08;
+
+    /// <summary>
+    /// The command to turn the display off.
+    /// </summary>
+    /// <remarks>
+    /// This command is used to turn the 
+    /// display off without clearing the display.
+    /// </remarks>
     private const byte ENABLE = 0x04;
     #endregion
 
+
     #region -> Fields
+    /// <summary>
+    /// The I2C device used to communicate with the LCD display.
+    /// </summary>
     private readonly I2cDevice _i2cDevice;
+
+    /// <summary>
+    /// The display control byte used to control the display.
+    /// </summary>
+    /// <remarks>
+    /// This byte is used to control the display, cursor, and blink.
+    /// </remarks>
     private byte _displayControl;
+
+    /// <summary>
+    /// The display mode byte used to set the display mode.
+    /// </summary>
+    /// <remarks>
+    /// This byte is used to set the display mode, 
+    /// such as left to right or right to left.
+    /// </remarks>
     private byte _displayMode;
+
+    /// <summary>
+    /// The backlight byte used to control the backlight of the display.
+    /// </summary>
     private byte _backlight = LCD_BACKLIGHT;
+
+    /// <summary>
+    /// The synchronization object used to lock access to the I2C device.
+    /// </summary>
+    private object _sync = new();
     #endregion
 
 
@@ -40,32 +127,12 @@ public class HD44780
     /// </summary>
     public HD44780(byte deviceAddress)
     {
-        var settings = new I2cConnectionSettings(1, deviceAddress);
-        _i2cDevice = I2cDevice.Create(settings);
-
-        Initialize();
-    }
-    #endregion
-
-    #region -> Properties
-    /// <summary>
-    /// Gets or sets a value indicating whether 
-    /// the backlight of the LCD display is on.
-    /// </summary>
-    public bool DisplayOn
-    {
-        get => (_displayControl & 0x04) != 0;
-        set
+        lock (_sync)
         {
-            if (value)
-            {
-                _displayControl |= 0x04;
-            }
-            else
-            {
-                _displayControl &= 0xFB;
-            }
-            SendCommand((byte)(LCD_DISPLAY_CONTROL | _displayControl));
+            var settings = new I2cConnectionSettings(1, deviceAddress);
+            _i2cDevice = I2cDevice.Create(settings);
+
+            Initialize();
         }
     }
     #endregion
@@ -77,30 +144,10 @@ public class HD44780
     /// </summary>
     public void Clear()
     {
-        SendCommand(LCD_CLR);
-        Thread.Sleep(2); // Clear command needs a longer delay
-    }
-
-    /// <summary>
-    /// Sets the cursor position on the LCD display.
-    /// </summary>
-    /// <param name="col">The column index of the cursor position.</param>
-    /// <param name="row">The row index of the cursor position.</param>
-    public void SetCursorPosition(int col, int row)
-    {
-        int[] rowOffsets = { 0x00, 0x40, 0x14, 0x54 };
-        SendCommand((byte)(LCD_DDRAM_ADDR | (col + rowOffsets[row])));
-    }
-
-    /// <summary>
-    /// Writes the specified text to the LCD display.
-    /// </summary>
-    /// <param name="text">The text to be written.</param>
-    public void Write(string text)
-    {
-        foreach (var c in text)
+        lock (_sync)
         {
-            SendData((byte)c);
+            SendCommand(LCD_CLR);
+            Thread.Sleep(2); // Clear command needs a longer delay
         }
     }
 
@@ -112,8 +159,11 @@ public class HD44780
     /// <param name="text">The text to be written.</param>
     public void Write(int row, int col, string text)
     {
-        SetCursorPosition(col, row);
-        Write(text);
+        lock (_sync)
+        {
+            SetCursorPosition(col, row);
+            Write(text);
+        }
     }
 
     /// <summary>
@@ -123,11 +173,28 @@ public class HD44780
     /// <param name="charmap">The character map representing the custom character.</param>
     public void CreateCustomCharacter(byte location, byte[] charmap)
     {
-        location &= 0x7; // Only 8 locations available
-        SendCommand((byte)(LCD_CGRAM_ADDR | (location << 3)));
-        foreach (var line in charmap)
+        lock (_sync)
         {
-            SendData(line);
+            location &= 0x7; // Only 8 locations available
+            SendCommand((byte)(LCD_CGRAM_ADDR | (location << 3)));
+            foreach (var line in charmap)
+            {
+                SendData(line);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Disposes the resources used by the LCD display.
+    /// </summary>
+    /// <remarks>
+    /// This method releases the I2C device used by the LCD display.
+    /// </remarks>
+    public void Dispose()
+    {
+        lock (_sync)
+        {
+            _i2cDevice?.Dispose();
         }
     }
     #endregion
@@ -148,6 +215,29 @@ public class HD44780
         SendCommand((byte)(LCD_DISPLAY_CONTROL | _displayControl)); // Display on
         SendCommand((byte)(LCD_CLR)); // Clear display
         SendCommand((byte)(LCD_ENTRY_MODE_SET | _displayMode)); // Entry mode set
+    }
+
+    /// <summary>
+    /// Sets the cursor position on the LCD display.
+    /// </summary>
+    /// <param name="col">The column index of the cursor position.</param>
+    /// <param name="row">The row index of the cursor position.</param>
+    private void SetCursorPosition(int col, int row)
+    {
+        int[] rowOffsets = [0x00, 0x40, 0x14, 0x54];
+        SendCommand((byte)(LCD_DDRAM_ADDR | (col + rowOffsets[row])));
+    }
+
+    /// <summary>
+    /// Writes the specified text to the LCD display.
+    /// </summary>
+    /// <param name="text">The text to be written.</param>
+    private void Write(string text)
+    {
+        foreach (var c in text)
+        {
+            SendData((byte)c);
+        }
     }
 
     /// <summary>
