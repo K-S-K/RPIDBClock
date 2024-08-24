@@ -19,37 +19,28 @@ internal class Program
     /// </summary>
     private const byte HD44780_ADDRESS = 0x27;
 
-    private static INTPService? ntp;
-
-    private static ILCDService? lcd;
-
-    private static IRTCService? rtc;
-
     /// <summary>
     /// The main method of the application.
     /// </summary>
     /// <param name="args">The command-line arguments.</param>
     private static void Main(string[] args)
     {
-        // Create a new instance of the NTP client.
-        ntp = new NTPService();
+        var builder = WebApplication.CreateBuilder(args);
 
-        // Create a new instance of the DS3231 real-time clock.
-        rtc = new RTCService(DS3231_ADDRESS);
+        builder.Services.AddSingleton<ILCDService>(provider => new LCDService(HD44780_ADDRESS));
+        builder.Services.AddSingleton<IRTCService>(provider => new RTCService(DS3231_ADDRESS));
+        builder.Services.AddSingleton<INTPService, NTPService>();
+        builder.Services.AddSingleton<IDBClock, DBClock>();
+        
+        var app = builder.Build();
 
-        // Create a new instance of the HD44780 LCD display.
-        lcd = new LCDService(HD44780_ADDRESS);
-
-        // Create a new instance of the clock.
-        DBClock clock = new(ntp, lcd, rtc);
+        // Ressolve and start DBClock service.
+        IDBClock clock = app.Services.GetRequiredService<IDBClock>();
         clock.Start();
 
-        // Wait for 20 seconds.
-        for (int i = 0; i < 20; i++)
-        {
-            Console.WriteLine($"[{i}]");
-            Thread.Sleep(1000);
-        }
+        app.MapGet("/", () => "Hello Raspberry PI!");
+
+        app.Run();
 
         clock.Pause();
         clock.Dispose();
