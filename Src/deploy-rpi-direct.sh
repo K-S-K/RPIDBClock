@@ -11,8 +11,11 @@ rsync -vv -avz --exclude 'bin/' --exclude 'obj/' $LOCAL_PATH $RPI_USER@$RPI_IP:$
 
 # SSH into RPI and build & run the project
 ssh -t $RPI_USER@$RPI_IP << EOF
+  # Navigate to project directory
   cd $RPI_PATH
   cd Src
+
+  # Build and run the project
   dotnet build
   dotnet run --project rdc-svc/rdc-svc.csproj
 EOF

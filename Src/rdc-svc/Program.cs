@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Diagnostics;
+using Microsoft.Extensions.Options;
+using System.Text.RegularExpressions;
 
 using RPIDBClock.LCD;
 using RPIDBClock.RTC;
@@ -43,6 +45,16 @@ internal class Program
         //  Build the application
         var app = builder.Build();
 
+        // Get the host URL from configuration
+        string hostUrl = builder.Configuration
+                .GetValue<string>("HostSettings:Url") ?? "http://*:5000";
+
+        // Configure the app to use the specified URL
+        app.Urls.Add(hostUrl);
+
+        // Open the port for incoming connections
+        OpenPortForIncomingConnections(hostUrl);
+
         // Ressolve and start DBClock service.
         IDBClock clock = app.Services.GetRequiredService<IDBClock>();
         clock.Start();
@@ -56,5 +68,40 @@ internal class Program
         // Stop and dispose the clock
         clock.Pause();
         clock.Dispose();
+    }
+
+    /// <summary>
+    /// Opens the port for incoming connections.
+    /// </summary>
+    /// <param name="url">The URL to open the port for.</param>
+    /// <remarks>
+    /// This method uses the `ufw` command to open the port for incoming connections.
+    /// </remarks>
+    private static void OpenPortForIncomingConnections(string url)
+    {
+        // Extract the port number using a regular expression
+        var match = Regex.Match(url, @":(\d+)");
+        if (match.Success && int.TryParse(match.Groups[1].Value, out int port))
+        {
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "sudo",
+                    Arguments = $"ufw allow {port}",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                }
+            };
+
+            process.Start();
+            process.WaitForExit();
+        }
+        else
+        {
+            Console.WriteLine($"Invalid URL format. Could not extract "
+                + $"port number from the string \"{url}\".");
+        }
     }
 }
