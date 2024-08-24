@@ -27,21 +27,30 @@ internal class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddSingleton<ILCDService>(provider => new LCDService(HD44780_ADDRESS));
-        builder.Services.AddSingleton<IRTCService>(provider => new RTCService(DS3231_ADDRESS));
+        // Bind I2CSettings section to I2CSettings class
+        builder.Services.Configure<I2CSettings>(builder.Configuration.GetSection(nameof(I2CSettings)));
+        var i2cSettings = provider.GetRequiredService<IOptions<I2CSettings>>().Value;
+
+        // Register services
+        builder.Services.AddSingleton<ILCDService>(provider => new LCDService(i2cSettings.LCDAddress));
+        builder.Services.AddSingleton<IRTCService>(provider => new RTCService(i2cSettings.RTCAddress));
         builder.Services.AddSingleton<INTPService, NTPService>();
         builder.Services.AddSingleton<IDBClock, DBClock>();
-        
+
+        //  Build the application
         var app = builder.Build();
 
         // Ressolve and start DBClock service.
         IDBClock clock = app.Services.GetRequiredService<IDBClock>();
         clock.Start();
 
+        // Register routes
         app.MapGet("/", () => "Hello Raspberry PI!");
 
+        // Run the application
         app.Run();
 
+        // Stop and dispose the clock
         clock.Pause();
         clock.Dispose();
     }
