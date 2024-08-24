@@ -13,24 +13,105 @@ namespace RPIDBClock.LCD;
 public class HD44780 : IDisposable
 {
     #region -> Constants
+    /// <summary>
+    /// The command to clear the LCD display.
+    /// </summary>
     private const byte LCD_CLR = 0x01;
+
+    /// <summary>
+    /// The command to return to the home position.
+    /// </summary>
+    /// <remarks>
+    /// This command sets the cursor position 
+    /// to the upper-left corner of the display.
+    /// </remarks>
     private const byte LCD_HOME = 0x02;
+
+    /// <summary>
+    /// The command to set the entry mode.
+    /// </summary>
+    /// <remarks>
+    /// This command is used to set the cursor move direction and display shift.
+    /// </remarks>
     private const byte LCD_ENTRY_MODE_SET = 0x04;
+
+    /// <summary>
+    /// The command to control the display.
+    /// </summary>
+    /// <remarks>
+    /// This command is used to control the display, cursor, and blink.
+    /// </remarks>
     private const byte LCD_DISPLAY_CONTROL = 0x08;
+
+    /// <summary>
+    /// The command to shift the cursor.
+    /// </summary>
+    /// <remarks>
+    /// This command is used to shift the cursor position 
+    /// to the left or right without changing the display data.
+    /// </remarks>
     private const byte LCD_CURSOR_SHIFT = 0x10;
+
+    /// <summary>
+    /// The command to set the function.
+    /// </summary>
+    /// <remarks>
+    /// This command is used to set the number of display lines and character font.
+    /// </remarks>
     private const byte LCD_FUNCTION_SET = 0x20;
+
+    /// <summary>
+    /// The command to set the CGRAM address.
+    /// </summary>
     private const byte LCD_CGRAM_ADDR = 0x40;
+
+    /// <summary>
+    /// The command to set the DDRAM address.
+    /// </summary>
     private const byte LCD_DDRAM_ADDR = 0x80;
 
+    /// <summary>
+    /// The command to turn the display off.
+    /// </summary>
     private const byte LCD_BACKLIGHT = 0x08;
+
+    /// <summary>
+    /// The command to turn the display off.
+    /// </summary>
+    /// <remarks>
+    /// This command is used to turn the 
+    /// display off without clearing the display.
+    /// </remarks>
     private const byte ENABLE = 0x04;
     #endregion
 
 
     #region -> Fields
+    /// <summary>
+    /// The I2C device used to communicate with the LCD display.
+    /// </summary>
     private readonly I2cDevice _i2cDevice;
+
+    /// <summary>
+    /// The display control byte used to control the display.
+    /// </summary>
+    /// <remarks>
+    /// This byte is used to control the display, cursor, and blink.
+    /// </remarks>
     private byte _displayControl;
+
+    /// <summary>
+    /// The display mode byte used to set the display mode.
+    /// </summary>
+    /// <remarks>
+    /// This byte is used to set the display mode, 
+    /// such as left to right or right to left.
+    /// </remarks>
     private byte _displayMode;
+
+    /// <summary>
+    /// The backlight byte used to control the backlight of the display.
+    /// </summary>
     private byte _backlight = LCD_BACKLIGHT;
 
     /// <summary>

@@ -1,7 +1,8 @@
-﻿using RPIDBClock.LCD;
+﻿using Microsoft.Extensions.Options;
+
+using RPIDBClock.LCD;
 using RPIDBClock.RTC;
 using RPIDBClock.NET;
-using Microsoft.Extensions.Options;
 
 namespace RPIDBClock.Svc;
 
@@ -10,16 +11,6 @@ namespace RPIDBClock.Svc;
 /// </summary>
 internal class Program
 {
-    /// <summary>
-    /// The I2C address of the DS3231 RTC module.
-    /// </summary>
-    private const byte DS3231_ADDRESS = 0x68;
-
-    /// <summary>
-    /// The I2C address of the HD44780 LCD module.
-    /// </summary>
-    private const byte HD44780_ADDRESS = 0x27;
-
     /// <summary>
     /// The main method of the application.
     /// </summary>
