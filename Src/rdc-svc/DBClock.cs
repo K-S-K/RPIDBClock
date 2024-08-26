@@ -135,6 +135,20 @@ public class DBClock : IDBClock
         ];
         lcd.CreateCustomCharacter(3, humSymbol);
 
+        // Create a custom character for the earth symbol (🌍).
+        byte[] earthSymbol =
+        [
+            0b00000,
+            0b01110,
+            0b11111,
+            0b11111,
+            0b01110,
+            0b10101,
+            0b11111,
+            0b00000
+        ];
+        lcd.CreateCustomCharacter(4, earthSymbol);
+
 
         // Prepare the LCD display.
         lcd.Clear();
@@ -146,6 +160,9 @@ public class DBClock : IDBClock
 
         // Display the custom character (🌡) for the temperature symbol.
         lcd.Write(1, 0, "\x02");
+
+        // Display the custom character (🌍) for the earth symbol
+        lcd.Write(2, 0, "\x04");
     }
 
     /// <summary>
@@ -159,13 +176,17 @@ public class DBClock : IDBClock
     private void OnTimer(TimerEventArgs args)
     {
         // Display the current time and temperature on the LCD display.
-        DateTime time = args.Time;
+        DateTime time = args.Time.ToLocalTime();
         double temp = double.Round(rtc.ReadTemperature(), 1, MidpointRounding.ToEven);
+
+        TimeZoneInfo.ClearCachedData();
+        var tz = TimeZoneInfo.Local;
 
         lcd.Write(0, 1, $"{time:yyyy.MM.dd HH:mm:ss}");
         lcd.Write(1, 1, $"Temperature: {temp:F1}");
+        lcd.Write(2, 1, $"{tz.Id,-19}");
 
-        Console.WriteLine($"Time: {rtc.ReadTime():yyyy.MM.dd HH:mm:ss}  Temperature: {rtc.ReadTemperature()}°C");
+        Console.WriteLine($"Time: {time:yyyy.MM.dd HH:mm:ss}  Temperature: {rtc.ReadTemperature()}°C");
     }
     #endregion
 
