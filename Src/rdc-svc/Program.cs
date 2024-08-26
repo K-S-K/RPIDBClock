@@ -28,14 +28,16 @@ internal class Program
         builder.Services.AddSingleton<ILCDService>(provider =>
         {
             var i2cSettings = provider.GetRequiredService<IOptions<I2CSettings>>().Value;
-            return new LCDService(i2cSettings.LCDAddress);
+            return i2cSettings.LCDAddress > 0 ?
+                new LCDService(i2cSettings.LCDAddress) : new LCDStub();
         });
 
         // Register RTC service
         builder.Services.AddSingleton<IRTCService>(provider =>
         {
             var i2cSettings = provider.GetRequiredService<IOptions<I2CSettings>>().Value;
-            return new RTCService(i2cSettings.RTCAddress);
+            return i2cSettings.RTCAddress > 0 ?
+                new RTCService(i2cSettings.RTCAddress) : new RTCStub();
         });
 
         // Register NTP and DBClock services
@@ -64,10 +66,6 @@ internal class Program
 
         // Run the application
         app.Run();
-
-        // Stop and dispose the clock
-        clock.Pause();
-        clock.Dispose();
     }
 
     /// <summary>
