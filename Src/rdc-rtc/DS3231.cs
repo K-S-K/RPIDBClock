@@ -83,7 +83,8 @@ public class DS3231 : IDisposable
                 BcdToDec(data[4]), // Day
                 BcdToDec(data[2]), // Hour
                 BcdToDec(data[1]), // Minute
-                BcdToDec(data[0]) // Second
+                BcdToDec(data[0]), // Second
+                DateTimeKind.Utc
             );
         }
     }
