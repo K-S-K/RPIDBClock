@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 using RPIDBClock.LCD;
 using RPIDBClock.RTC;
-using RPIDBClock.NET;
+using RPIDBClock.NET.NTP;
 
 namespace RPIDBClock.Svc;
 

@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Sockets;
 
-namespace RPIDBClock.NET;
+namespace RPIDBClock.NET.NTP;
 
 /// <summary>
 /// Represents an NTP client.

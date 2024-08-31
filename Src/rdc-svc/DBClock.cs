@@ -1,6 +1,6 @@
 using RPIDBClock.LCD;
-using RPIDBClock.NET;
 using RPIDBClock.RTC;
+using RPIDBClock.NET.NTP;
 
 namespace RPIDBClock.Svc;
 

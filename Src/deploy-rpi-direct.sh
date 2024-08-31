@@ -17,5 +17,5 @@ ssh -t $RPI_USER@$RPI_IP << EOF
 
   # Build and run the project
   dotnet build
-  dotnet run --project rdc-svc/rdc-svc.csproj
+  # dotnet run --project rdc-svc/rdc-svc.csproj
 EOF
