@@ -1,4 +1,4 @@
-namespace RPIDBClock.NET;
+namespace RPIDBClock.NET.NTP;
 
 /// <summary>
 /// Represents an NTP client.
