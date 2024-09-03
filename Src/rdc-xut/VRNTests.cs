@@ -1,9 +1,16 @@
+using System.Text.Json;
+
 using RPIDBClock.NET.VRN;
+using RPIDBClock.Svc.Schedule;
 
 namespace RPIDBClock.Tests;
 
 public class VRNTests
 {
+    private JsonSerializerOptions _jso = new() { WriteIndented = true };
+
+    private string _dir = "/Users/ksk-work/Projects/RPI/RPIDBClock/Doc/MyVRN";
+
     //[Fact]
     [Theory]
     [InlineData("Responce1.json", 4, "S3 09:21 (Karlsruhe Hauptbahnhof) Ludwigshafen, Hauptbahnhof - Heidelberg, Hauptbahnhof")]
@@ -12,7 +19,7 @@ public class VRNTests
     {
         // Path to the JSON file
         // string jsonFilePath = "/Users/ksk-work/Projects/RPI/RPIDBClock/Doc/MyVRN/Responce2.json";
-        string jsonFilePath = Path.Combine("/Users/ksk-work/Projects/RPI/RPIDBClock/Doc/MyVRN", fileName);
+        string jsonFilePath = Path.Combine(_dir, fileName);
 
         // Read the JSON file
         string jsonString = File.ReadAllText(jsonFilePath);
@@ -35,6 +42,128 @@ public class VRNTests
             Console.WriteLine($"End Point: {trip.EndPoint}");
         }
         Console.WriteLine();
+    }
 
+    /// <summary>
+    /// Schedule Reading Test
+    /// </summary>
+    /// <exception cref="FileNotFoundException"></exception>
+    [Fact]
+    public void ScheduleReadingTest()
+    {
+        // Prepare the path to the JSON file
+        string jsonFilePath = Path.Combine(_dir, "Schedule.json");
+
+        // Read the JSON file
+        string jsExpected = File.ReadAllText(jsonFilePath)
+            ?? throw new FileNotFoundException(jsonFilePath);
+
+        // Deserialize the schedule from the JSON string
+        ShGlobalSchedule schedule = JsonSerializer
+            .Deserialize<ShGlobalSchedule>(jsExpected, _jso);
+
+        // Serialize the schedule to the JSON string
+        string jsActual = JsonSerializer.Serialize(schedule, _jso);
+
+
+        // Serialize the secondary schedule to the JSON file
+        File.WriteAllText(Path.Combine(_dir, "Schedule2.json"), jsActual);
+
+        // Compare the expected and actual schedules
+        Assert.Equal(jsExpected, jsActual);
+    }
+
+    /// <summary>
+    /// Fill the schedule with the trips from the JSON files
+    /// </summary>
+    /// <remarks>
+    /// The method reads the JSON files with the trips and fills the schedule with them.
+    /// Then it checks the schedule for the trips.
+    /// </remarks>
+    // [Fact]
+    public void FillTheScheduleTest()
+    {
+        // Pathes to the JSON files
+        string[] jsonFilePathes = [
+            Path.Combine(_dir, "Resp_HD_LU_1.json"),
+            Path.Combine(_dir, "Resp_HD_LU_2.json"),
+            Path.Combine(_dir, "Resp_HD_LU_3.json"),
+            Path.Combine(_dir, "Resp_HD_LU_4.json"),
+            Path.Combine(_dir, "Resp_HD_LU_5.json"),
+            Path.Combine(_dir, "Resp_HD_LU_6.json"),
+            Path.Combine(_dir, "Resp_LU_HD_1.json"),
+            Path.Combine(_dir, "Resp_LU_HD_2.json"),
+            Path.Combine(_dir, "Resp_LU_HD_3.json"),
+            Path.Combine(_dir, "Resp_LU_HD_4.json"),
+            Path.Combine(_dir, "Resp_LU_HD_5.json"),
+        ];
+
+        // Create the schedule
+        ShGlobalSchedule schedule = new();
+
+        // Fill the schedule with the trips from the JSON files
+        foreach (string jsonFilePath in jsonFilePathes)
+        {
+            // Read the particular JSON file
+            string jsonString = File.ReadAllText(jsonFilePath);
+
+            // Parse the JSON file
+            List<VRNTrainTrip> trips = VRNResponce.ParseJson(jsonString);
+
+            // Add the trips to the schedule
+            foreach (VRNTrainTrip trip in trips)
+            {
+                // Create the route
+                ShFlightRoute route = new()
+                {
+                    Orig = trip.StartPoint,
+                    Dest = trip.EndPoint
+                };
+
+                // Create the flight
+                ShFlightItem flight = new()
+                {
+                    Name = trip.Train,
+                    DepartureExpected = trip.DepartureExpected,
+                    ArrivalExpected = trip.ArrivalExpected,
+                    DepartureNormal = trip.DepartureNormal,
+                    ArrivalNormal = trip.ArrivalNormal,
+                    Duration = trip.Duration
+                };
+
+                // Add the flight to the schedule
+                schedule.AddFlight(route, flight);
+            }
+
+            // Check the schedule for the trips
+            foreach (VRNTrainTrip trip in trips)
+            {
+                ShFlightRoute route = new()
+                {
+                    Orig = trip.StartPoint,
+                    Dest = trip.EndPoint
+                };
+
+                IReadOnlyList<ShFlightItem> flights =
+                    schedule.GetFlights(route, trip.DepartureExpected);
+
+                Assert.Contains(flights, flight =>
+                    flight.DepartureExpected == trip.DepartureExpected);
+            }
+        }
+
+        // Serialize the schedule to the JSON file and read it back
+        string jsExpected = JsonSerializer.Serialize(schedule, _jso);
+        File.WriteAllText(Path.Combine(_dir, "Schedule.json"), jsExpected);
+
+        // Deserialize the schedule from the JSON file
+        schedule = JsonSerializer.Deserialize<ShGlobalSchedule>(jsExpected, _jso);
+        string jsActual = JsonSerializer.Serialize(schedule, _jso);
+
+        // Serialize the secondary schedule to the JSON file
+        File.WriteAllText(Path.Combine(_dir, "Schedule2.json"), jsActual);
+
+        // Compare the expected and actual schedules
+        Assert.Equal(jsExpected, jsActual);
     }
 }

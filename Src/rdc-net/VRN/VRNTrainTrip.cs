@@ -3,54 +3,54 @@ namespace RPIDBClock.NET.VRN;
 /// <summary>
 /// Single Trip Description
 /// </summary>
-public class VRNTrainTrip
+public record VRNTrainTrip
 {
     /// <summary>
     /// The Name Train Route (e.g. S3)
     /// </summary>
-    public string Train { get; set; } = null!;
+    public required string Train { get; init; } = null!;
 
     /// <summary>
     /// The Destination of the Train 
     /// (e.g. Karlsruhe Hauptbahnhof) - the whole trip name
     /// </summary>
-    public string Destination { get; set; } = null!;
+    public required string Destination { get; init; } = null!;
 
     /// <summary>
     /// The planned Departure Time like in the schedule
-    public DateTime DepartureNormal { get; set; }
+    public required DateTime DepartureNormal { get; init; }
 
     /// <summary>
     /// The planned Arrival Time like in the schedule
     /// </summary>
-    public DateTime ArrivalNormal { get; set; }
+    public required DateTime ArrivalNormal { get; init; }
 
     /// <summary>
     /// The expected Departure Time 
     /// regarding the current situation
     /// </summary>
-    public DateTime DepartureExpected { get; set; }
+    public required DateTime DepartureExpected { get; init; }
 
     /// <summary>
     /// The expected Arrival Time 
     /// regarding the current situation
     /// </summary>
-    public DateTime ArrivalExpected { get; set; }
+    public required DateTime ArrivalExpected { get; init; }
 
     /// <summary>
     /// The Duration of the Trip
     /// </summary>
-    public TimeSpan Duration { get; set; }
+    public required TimeSpan Duration { get; init; }
 
     /// <summary>
     /// The Start Point of the Trip
     /// </summary>
-    public string StartPoint { get; set; } = null!;
+    public required string StartPoint { get; init; } = null!;
 
     /// <summary>
     /// The End Point of the Trip
     /// </summary>
-    public string EndPoint { get; set; } = null!;
+    public required string EndPoint { get; init; } = null!;
 
     /// <summary>
     /// The Train Trip string representation for the debug purposes
