@@ -4,6 +4,7 @@
     <ProjectReference Include="..\rdc-rtc\rdc-rtc.csproj" />
     <ProjectReference Include="..\rdc-lcd\rdc-lcd.csproj" />
     <ProjectReference Include="..\rdc-net\rdc-net.csproj" />
+    <ProjectReference Include="..\rdc-svc\rdc-svc.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
