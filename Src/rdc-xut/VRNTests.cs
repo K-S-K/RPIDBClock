@@ -5,6 +5,10 @@ using RPIDBClock.Svc.Schedule;
 
 namespace RPIDBClock.Tests;
 
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable xUnit1013 // Public method should be marked as test
+
 public class VRNTests
 {
     private JsonSerializerOptions _jso = new() { WriteIndented = true };
@@ -74,6 +78,66 @@ public class VRNTests
     }
 
     /// <summary>
+    /// Get Flights Test
+    /// </summary>
+    [Fact]
+    public void GetFlightsTest()
+    {
+        // Prepare the path to the JSON file
+        string jsonFilePath = Path.Combine(_dir, "Schedule.json");
+
+        // Read the JSON file
+        string jsExpected = File.ReadAllText(jsonFilePath)
+            ?? throw new FileNotFoundException(jsonFilePath);
+
+        // Deserialize the schedule from the JSON string
+        ShGlobalSchedule schedule = JsonSerializer
+            .Deserialize<ShGlobalSchedule>(jsExpected, _jso);
+
+
+        // Get the flights from the schedule
+        ShFlightRoute route = new()
+        {
+            Orig = "Ludwigshafen, Hauptbahnhof",
+            Dest = "Heidelberg, Hauptbahnhof",
+        };
+
+        // The date and time to get the flights for
+        DateTime date = new(2024, 9, 3);
+        DateTime time = date.Add(new TimeSpan(9, 20, 0));
+        DateTime time1 = date.Add(new TimeSpan(9, 21, 0));
+        DateTime time2 = date.Add(new TimeSpan(9, 28, 0));
+
+        // Get the flights from the schedule
+        // for the date in past (no flights)
+        IReadOnlyList<ShFlightItem> flights =
+            schedule.GetFlights(route, time, 2);
+
+        // Check the flights
+        // There should be no flights
+        Assert.Empty(flights);
+
+        // Shift the date 
+        // to the particular date flights to be retrieved
+        schedule.ShiftToDate(date);
+
+        // Again get the flights from the schedule
+        flights =
+            schedule.GetFlights(route, time, 2);
+
+        // Check the flights, there should be 2 flights
+        Assert.Equal(2, flights.Count);
+
+        // Check the flight time
+        Assert.Contains(flights, flight =>
+            flight.DepartureExpected == time1);
+
+        // Check the flight time
+        Assert.Contains(flights, flight =>
+            flight.DepartureExpected == time2);
+    }
+
+    /// <summary>
     /// Fill the schedule with the trips from the JSON files
     /// </summary>
     /// <remarks>
@@ -81,7 +145,7 @@ public class VRNTests
     /// Then it checks the schedule for the trips.
     /// </remarks>
     // [Fact]
-    public void FillTheScheduleTest()
+    public void FillTheScheduleTool()
     {
         // Pathes to the JSON files
         string[] jsonFilePathes = [
@@ -167,3 +231,6 @@ public class VRNTests
         Assert.Equal(jsExpected, jsActual);
     }
 }
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning restore xUnit1013 // Public method should be marked as test
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
