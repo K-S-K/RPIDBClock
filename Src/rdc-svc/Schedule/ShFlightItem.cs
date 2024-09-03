@@ -44,6 +44,21 @@ public record ShFlightItem
     public TimeSpan Duration { get; init; }
 
     /// <summary>
+    /// Shifts the flight to the specified date
+    /// </summary>
+    /// <param name="date">The date to shift the flight to</param>
+    /// <returns>The shifted flight</returns>
+    public ShFlightItem ShiftToDate(DateTime date) => new()
+    {
+        Name = Name,
+        DepartureNormal = date.Add(DepartureNormal.TimeOfDay),
+        ArrivalNormal = date.Add(ArrivalNormal.TimeOfDay),
+        DepartureExpected = date.Add(DepartureExpected.TimeOfDay),
+        ArrivalExpected = date.Add(ArrivalExpected.TimeOfDay),
+        Duration = Duration
+    };
+
+    /// <summary>
     /// The string representation of the Particular Flight for the debug purposes
     /// </summary>
     public override string ToString()

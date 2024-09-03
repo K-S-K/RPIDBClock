@@ -70,6 +70,24 @@ public class ShRouteSchedule
     }
 
     /// <summary>
+    /// Shifts the schedule to the specified date
+    /// </summary>
+    /// <param name="date">The date to shift the schedule to</param>
+    public void ShiftToDate(DateTime date)
+    {
+        // Ensure the date is the date only
+        date = date.Date;
+
+        // Shift the flights to the specified date
+        List<ShFlightItem> flights =
+            Flights.Select(f => f.ShiftToDate(date)).ToList();
+
+        // Clear the flights and add the shifted flights
+        Flights.Clear();
+        Flights.AddRange(flights);
+    }
+
+    /// <summary>
     /// The string representation of the Route Schedule for the debug purposes
     /// </summary>
     public override string ToString() => $"{Route} {Count} flights";

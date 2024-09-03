@@ -74,6 +74,22 @@ public class ShGlobalSchedule
 
         return [];
     }
+
+    /// <summary>
+    /// Shifts the schedule to the specified date
+    /// </summary>
+    /// <param name="date">The date to shift the schedule to</param>
+    public void ShiftToDate(DateTime date)
+    {
+        // Ensure the date is the date only
+        date = date.Date;
+
+        // Shift all the routes
+        foreach (ShRouteSchedule schedule in _routes.Values)
+        {
+            schedule.ShiftToDate(date);
+        }
+    }
     #endregion
 
 
