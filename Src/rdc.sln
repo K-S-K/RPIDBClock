@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdc-net", "rdc-net\rdc-net.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdc-xut", "rdc-xut\rdc-xut.csproj", "{2E2BB6C0-28F7-4479-97C5-9458C982E73B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdc-bas", "rdc-bas\rdc-bas.csproj", "{8C006615-CF11-46AF-A3AA-A14282263E04}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{2E2BB6C0-28F7-4479-97C5-9458C982E73B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E2BB6C0-28F7-4479-97C5-9458C982E73B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E2BB6C0-28F7-4479-97C5-9458C982E73B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C006615-CF11-46AF-A3AA-A14282263E04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C006615-CF11-46AF-A3AA-A14282263E04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C006615-CF11-46AF-A3AA-A14282263E04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C006615-CF11-46AF-A3AA-A14282263E04}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

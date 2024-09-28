@@ -1,17 +1,22 @@
+using RPIDBClock.Log;
+
 namespace RPIDBClock.LCD;
 
 /// <summary>
-/// Represents a service for replacing real interacting with an LCD display.
+/// Represents a stub LCD service for replacing real one.
 /// </summary>
-public class LCDStub : ILCDService
+public class LCDStub(ISimpleLogger logger) : ILCDService
 {
+    /// <summary>
+    /// The logger.
+    /// </summary>
+    private readonly ISimpleLogger _logger = logger;
+
+
     /// <summary>
     /// Clears the LCD display.
     /// </summary>
-    public void Clear()
-    {
-        Console.WriteLine("LCDStub: Clear()");
-    }
+    public void Clear() => _logger.AddLine("LCDStub: Clear()");
 
     /// <summary>
     /// Writes the specified text to the LCD display at the specified location.
@@ -26,7 +31,7 @@ public class LCDStub : ILCDService
             }
         }
 
-        Console.WriteLine($"LCDStub: Write({row}, {col}, \"{text}\")");
+        _logger.AddLine($"LCDStub: Write({row}, {col}, \"{text}\")");
     }
 
     /// <summary>
@@ -39,15 +44,11 @@ public class LCDStub : ILCDService
     /// </summary>
     /// <param name="level">The brightness level (0-255).</param>
     public void SetBrightness(int level)
-    {
-        Console.WriteLine($"LCDStub: SetBrightness({level})");
-    }
+        => _logger.AddLine($"LCDStub: SetBrightness({level})");
 
     /// <summary>
     /// Prepares the LCD display.
     /// </summary>
     public void PrepareDisplay()
-    {
-        Console.WriteLine("LCDStub: PrepareDisplay()");
-    }
+        => _logger.AddLine("LCDStub: PrepareDisplay()");
 }

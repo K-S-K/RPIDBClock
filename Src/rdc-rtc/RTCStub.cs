@@ -1,34 +1,47 @@
+using RPIDBClock.Log;
+
 namespace RPIDBClock.RTC;
 
 /// <summary>
 /// Represents a service for replacing real interacting with a real-time clock (RTC).
 /// </summary>
-public class RTCStub : IRTCService
+public class RTCStub(ISimpleLogger logger) : IRTCService
 {
     /// <summary>
-    /// Reads the temperature from the RTC module.
+    /// The logger.
     /// </summary>
-    /// <returns></returns>
-    public double ReadTemperature()
-    {
-        return 0.0; // Placeholder return value, replace with actual implementation.
-    }
+    private readonly ISimpleLogger _logger = logger;
+
+
+    #region -> Test Support
+    /// <summary>
+    /// Gets or sets the date and time value.
+    /// </summary>
+    public DateTime DateTimeValue { get; set; } = DateTime.MinValue;
 
     /// <summary>
-    /// Reads the current time from the RTC module.
+    /// Gets or sets the temperature value.
     /// </summary>
-    /// <returns></returns>
-    public DateTime ReadTime()
-    {
-        return DateTime.UtcNow; // Placeholder return value, replace with actual implementation.
-    }
+    public double TemperatureValue { get; set; } = 0.0;
+    #endregion
+
+
+    #region -> IRTCService Implementation
+    /// <summary>
+    /// Simulates reading the current temperature from the RTC module.
+    /// </summary>
+    public double ReadTemperature() => TemperatureValue;
 
     /// <summary>
-    /// Sets the current time on the RTC module.
+    /// Simulates reading the current time from the RTC module.
+    /// </summary>
+    public DateTime ReadTime() => DateTimeValue;
+
+    /// <summary>
+    /// Simulates writing the specified time to the RTC module.
     /// </summary>
     /// <param name="time"></param>
     public void WriteTime(DateTime time)
-    {
-        Console.WriteLine($"RTCStub: WriteTime({time})");
-    }
+        => _logger.AddLine($"RTCStub: WriteTime({time})");
+    #endregion
 }

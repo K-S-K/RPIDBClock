@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using System.Text.RegularExpressions;
 
+using RPIDBClock.Log;
 using RPIDBClock.LCD;
 using RPIDBClock.RTC;
 using RPIDBClock.NET.NTP;
@@ -24,20 +25,25 @@ internal class Program
         // Bind I2CSettings section to I2CSettings class
         builder.Services.Configure<I2CSettings>(builder.Configuration.GetSection(nameof(I2CSettings)));
 
+        // Register SimpleLogger service
+        builder.Services.AddSingleton<ISimpleLogger, SimpleLogger>();
+
         // Register LCD service
         builder.Services.AddSingleton<ILCDService>(provider =>
         {
             var i2cSettings = provider.GetRequiredService<IOptions<I2CSettings>>().Value;
+            ISimpleLogger logger = provider.GetRequiredService<ISimpleLogger>();
             return i2cSettings.LCDAddress > 0 ?
-                new LCDService(i2cSettings.LCDAddress) : new LCDStub();
+                new LCDService(i2cSettings.LCDAddress) : new LCDStub(logger);
         });
 
         // Register RTC service
         builder.Services.AddSingleton<IRTCService>(provider =>
         {
             var i2cSettings = provider.GetRequiredService<IOptions<I2CSettings>>().Value;
+            ISimpleLogger logger = provider.GetRequiredService<ISimpleLogger>();
             return i2cSettings.RTCAddress > 0 ?
-                new RTCService(i2cSettings.RTCAddress) : new RTCStub();
+                new RTCService(i2cSettings.RTCAddress) : new RTCStub(logger);
         });
 
         // Register NTP and DBClock services
