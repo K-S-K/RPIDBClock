@@ -163,5 +163,100 @@ public class LCDService : ILCDService
         // The HD44780 LCD display does not support PWM for backlight control.
         // TODO: Implement a workaround for setting the brightness level.
     }
+
+    /// <summary>
+    /// Prepares the LCD display.
+    /// </summary>
+    /// <remarks>
+    /// This method creates custom characters for the degree symbol (°), the clock symbol (🕒),
+    /// the temperature symbol (🌡), and the humidity symbol (💧).
+    /// </remarks>
+    public void PrepareDisplay()
+    {
+        // Create a custom character for the degree symbol (°).
+        byte[] degSymbol =
+        [
+            0b00110,
+            0b01001,
+            0b01001,
+            0b00110,
+            0b00000,
+            0b00000,
+            0b00000,
+            0b00000
+        ];
+        CreateCustomCharacter(0, degSymbol);
+
+        // Create a custom character for the clock symbol (🕒).
+        byte[] clockSymbol =
+        [
+            0b00000,
+            0b01110,
+            0b10101,
+            0b10111,
+            0b10001,
+            0b01110,
+            0b00000,
+            0b00000
+        ];
+        CreateCustomCharacter(1, clockSymbol);
+
+        // Create a custom character for the temperature symbol (🌡).
+        byte[] tempSymbol =
+        [
+            0b00100,
+            0b01010,
+            0b01010,
+            0b01110,
+            0b01110,
+            0b11111,
+            0b11111,
+            0b01110
+        ];
+        CreateCustomCharacter(2, tempSymbol);
+
+        // Create a custom character for the humidity symbol (💧).
+        byte[] humSymbol =
+        [
+            0b00000,
+            0b00100,
+            0b00100,
+            0b01110,
+            0b10101,
+            0b10101,
+            0b10001,
+            0b01110
+        ];
+        CreateCustomCharacter(3, humSymbol);
+
+        // Create a custom character for the earth symbol (🌍).
+        byte[] earthSymbol =
+        [
+            0b00000,
+            0b01110,
+            0b11111,
+            0b11111,
+            0b01110,
+            0b10101,
+            0b11111,
+            0b00000
+        ];
+        CreateCustomCharacter(4, earthSymbol);
+
+
+        // Prepare the LCD display.
+        Clear();
+        Write(1, 18, "\x00");  // Display the custom character (°)
+        Write(1, 19, "C");  // Display the temperature unit (C)
+
+        // Display the custom character (🕒) for the clock symbol.
+        Write(0, 0, "\x01");
+
+        // Display the custom character (🌡) for the temperature symbol.
+        Write(1, 0, "\x02");
+
+        // Display the custom character (🌍) for the earth symbol
+        Write(2, 0, "\x04");
+    }
     #endregion
 }

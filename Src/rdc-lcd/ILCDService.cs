@@ -77,5 +77,14 @@ public interface ILCDService
     /// The brightness level must be between 0 and 100.
     /// </remarks>
     void SetBrightness(int level);
+
+    /// <summary>
+    /// Prepares the LCD display.
+    /// </summary>
+    /// <remarks>
+    /// This method creates custom characters for the degree symbol (°), the clock symbol (🕒),
+    /// the temperature symbol (🌡), and the humidity symbol (💧).
+    /// </remarks>
+    void PrepareDisplay();
     #endregion
 }
