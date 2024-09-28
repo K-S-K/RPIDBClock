@@ -42,4 +42,12 @@ public class LCDStub : ILCDService
     {
         Console.WriteLine($"LCDStub: SetBrightness({level})");
     }
+
+    /// <summary>
+    /// Prepares the LCD display.
+    /// </summary>
+    public void PrepareDisplay()
+    {
+        Console.WriteLine("LCDStub: PrepareDisplay()");
+    }
 }
