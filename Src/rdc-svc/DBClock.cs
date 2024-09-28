@@ -1,3 +1,4 @@
+using RPIDBClock.CLK;
 using RPIDBClock.LCD;
 using RPIDBClock.RTC;
 using RPIDBClock.NET.NTP;
@@ -23,9 +24,9 @@ public class DBClock : IDBClock
     private readonly IRTCService rtc;
 
     /// <summary>
-    /// The timer that triggers the clock update.
+    /// The timer service.
     /// </summary>
-    private Timer? timer;
+    private readonly ITimerService timerService;
     #endregion
 
 
@@ -46,39 +47,19 @@ public class DBClock : IDBClock
         this.lcd = lcd;
         this.rtc = rtc;
 
-        PrepareDisplay();
-        PrepareTimer();
+        // Create a timer service that triggers an event every second.
+        timerService = new TimerService(1000);
+
+        // Subscribe to the timer event to update the clock.
+        timerService.TimerEvent += (sender, args) => OnTimer(args);
+
+        // Prepare the LCD display.
+        lcd.PrepareDisplay();
     }
     #endregion
 
 
     #region -> Implementation
-    /// <summary>
-    /// Prepares the timer.
-    /// </summary>
-    private void PrepareTimer()
-    {
-        // Define the callback method for the timer.
-        System.Threading.TimerCallback callback = (state) =>
-        {
-            DateTime time = rtc.ReadTime();
-
-            OnTimer(new TimerEventArgs(time));
-        };
-
-        // Create a new timer that triggers the callback method every second.
-        timer = new Timer(callback, null, Timeout.Infinite, Timeout.Infinite);
-    }
-
-    /// <summary>
-    /// Prepares the LCD display.
-    /// </summary>
-    /// <remarks>
-    /// This method creates custom characters for the degree symbol (°), the clock symbol (🕒),
-    /// the temperature symbol (🌡), and the humidity symbol (💧).
-    /// </remarks>
-    private void PrepareDisplay() => lcd.PrepareDisplay();
-
     /// <summary>
     /// Handles the timer event.
     /// </summary>
@@ -125,19 +106,19 @@ public class DBClock : IDBClock
     /// <summary>
     /// Pauses the timer.
     /// </summary>
-    public void Pause() => timer?.Change(Timeout.Infinite, Timeout.Infinite);
+    public void Pause() => timerService.Pause();
 
     /// <summary>
     /// Resumes the timer.
     /// </summary>
-    public void Resume() => timer?.Change(0, 1000);
+    public void Resume() => timerService.Resume();
 
     /// <summary>
     /// Releases all resources used by the current instance.
     /// </summary>
     public void Dispose()
     {
-        timer?.Dispose();
+        timerService?.Dispose();
     }
     #endregion
 }
