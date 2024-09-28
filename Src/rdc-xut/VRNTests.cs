@@ -121,6 +121,8 @@ public class VRNTests
         // to the particular date flights to be retrieved
         schedule.ShiftToDate(date);
 
+        // TODO: Check the expiration time
+
         // Again get the flights from the schedule
         flights =
             schedule.GetFlights(route, time, 2);
@@ -135,6 +137,10 @@ public class VRNTests
         // Check the flight time
         Assert.Contains(flights, flight =>
             flight.DepartureExpected == time2);
+
+
+        // Check the expiration time
+        Assert.Equal(time1, schedule.ExpirationTime);
     }
 
     /// <summary>
