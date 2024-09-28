@@ -1,10 +1,18 @@
+using RPIDBClock.Log;
+
 namespace RPIDBClock.RTC;
 
 /// <summary>
 /// Represents a service for replacing real interacting with a real-time clock (RTC).
 /// </summary>
-public class RTCStub : IRTCService
+public class RTCStub(ISimpleLogger logger) : IRTCService
 {
+    /// <summary>
+    /// The logger.
+    /// </summary>
+    private readonly ISimpleLogger _logger = logger;
+
+
     #region -> Test Support
     /// <summary>
     /// Gets or sets the date and time value.
@@ -34,6 +42,6 @@ public class RTCStub : IRTCService
     /// </summary>
     /// <param name="time"></param>
     public void WriteTime(DateTime time)
-        => Console.WriteLine($"RTCStub: WriteTime({time})");
+        => _logger.AddLine($"RTCStub: WriteTime({time})");
     #endregion
 }

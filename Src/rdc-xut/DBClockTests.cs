@@ -1,3 +1,4 @@
+using RPIDBClock.Log;
 using RPIDBClock.Svc;
 using RPIDBClock.LCD;
 using RPIDBClock.RTC;
@@ -7,19 +8,20 @@ namespace RPIDBClock.Tests;
 
 public class DBClockTests
 {
-    private readonly LCDStub _lcd = new();
-    private readonly RTCStub _rtc = new();
-    private readonly NTPStub _ntp = new();
-
-
     [Fact]
     public void PrepareDisplayTest()
     {
+        ISimpleLogger logger = new SimpleLogger();
+        LCDStub _lcd = new(logger);
+        RTCStub _rtc = new(logger);
+        NTPStub _ntp = new();
+
+
         // Arrange and Act
         DBClock clock = new(_ntp, _lcd, _rtc);
 
         // Get the log data from the LCDStub.
-        string log = _lcd.Log;
+        string log = logger.Log;
 
         // Assert
         Assert.Contains("LCDStub: PrepareDisplay()\n", log);

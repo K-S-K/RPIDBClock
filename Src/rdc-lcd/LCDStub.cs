@@ -1,57 +1,22 @@
-using System.Text;
+using RPIDBClock.Log;
 
 namespace RPIDBClock.LCD;
 
 /// <summary>
-/// Represents a service for replacing real interacting with an LCD display.
+/// Represents a stub LCD service for replacing real one.
 /// </summary>
-public class LCDStub : ILCDService
+public class LCDStub(ISimpleLogger logger) : ILCDService
 {
-    #region -> Test Support
     /// <summary>
-    /// Log data collector.
+    /// The logger.
     /// </summary>
-    /// <remarks>
-    /// This field collects the log data during the interaction with the LCD display.
-    /// </remarks>
-    private readonly StringBuilder _log = new();
-
-    /// <summary>
-    /// The log data collected during the interaction with the LCD display.
-    /// </summary>
-    /// <remarks>
-    /// This property provides the log data collected during the interaction with the LCD display.
-    /// </remarks>
-    public string Log => _log.ToString();
-
-    /// <summary>
-    /// Writes the specified message to the console and the log.
-    /// </summary>
-    private void WriteLine(string message)
-    {
-        _log.AppendLine(message);
-        Console.WriteLine(message);
-    }
-
-    /// <summary>
-    /// Adds a separator to the log.
-    /// </summary>
-    public void AddLogSeparator()
-        => WriteLine("--------------------------------------------------");
-
-    /// <summary>
-    /// Adds a separator with the specified message to the log.
-    /// </summary>
-    public void AddLogSeparator(string message)
-        => WriteLine($"--------------------------------------- {message}");
-    #endregion
+    private readonly ISimpleLogger _logger = logger;
 
 
-    #region -> ILCDService Implementation
     /// <summary>
     /// Clears the LCD display.
     /// </summary>
-    public void Clear() => WriteLine("LCDStub: Clear()");
+    public void Clear() => _logger.AddLine("LCDStub: Clear()");
 
     /// <summary>
     /// Writes the specified text to the LCD display at the specified location.
@@ -66,7 +31,7 @@ public class LCDStub : ILCDService
             }
         }
 
-        WriteLine($"LCDStub: Write({row}, {col}, \"{text}\")");
+        _logger.AddLine($"LCDStub: Write({row}, {col}, \"{text}\")");
     }
 
     /// <summary>
@@ -79,12 +44,11 @@ public class LCDStub : ILCDService
     /// </summary>
     /// <param name="level">The brightness level (0-255).</param>
     public void SetBrightness(int level)
-        => WriteLine($"LCDStub: SetBrightness({level})");
+        => _logger.AddLine($"LCDStub: SetBrightness({level})");
 
     /// <summary>
     /// Prepares the LCD display.
     /// </summary>
     public void PrepareDisplay()
-        => WriteLine("LCDStub: PrepareDisplay()");
-    #endregion
+        => _logger.AddLine("LCDStub: PrepareDisplay()");
 }
