@@ -12,6 +12,11 @@ public class ShGlobalSchedule
     /// The list of the routes
     /// </summary>
     private readonly Dictionary<ShFlightRoute, ShRouteSchedule> _routes = [];
+
+    /// <summary>
+    /// The expiration time of the schedule
+    /// </summary>
+    private DateTime _expirationTime = DateTime.MinValue;
     #endregion
 
 
@@ -37,6 +42,26 @@ public class ShGlobalSchedule
     /// </summary>
     [JsonIgnore]
     public int Count => _routes.Count;
+
+    /// <summary>
+    /// The expiration time of the last retrieved schedule
+    /// </summary>
+    /// <remarks>
+    /// TODO: Use it
+    /// </remarks>
+    [JsonIgnore]
+    public DateTime ExpirationTime
+    {
+        get
+        {
+            if (_expirationTime == DateTime.MinValue)
+            {
+                _expirationTime = GetMinDepartureDate();
+            }
+
+            return _expirationTime;
+        }
+    }
     #endregion
 
 
@@ -69,7 +94,17 @@ public class ShGlobalSchedule
     {
         if (TryGetRouteSchedule(route, out ShRouteSchedule? schedule))
         {
-            return schedule?.GetFlights(from, count) ?? [];
+            var result = schedule?.GetFlights(from, count) ?? [];
+
+            // If there are flights, 
+            // set the expiration time
+            if (result.Count > 0)
+            {
+                _expirationTime =
+                    result.Min(f => f.DepartureNormal);
+            }
+
+            return result;
         }
 
         return [];
@@ -89,6 +124,9 @@ public class ShGlobalSchedule
         {
             schedule.ShiftToDate(date);
         }
+
+        // Reset the expiration time
+        _expirationTime = date;
     }
     #endregion
 
@@ -110,6 +148,30 @@ public class ShGlobalSchedule
     /// The string representation of the Global Schedule for the debug purposes
     /// </summary>
     public override string ToString() => $"{Count} routes";
+    #endregion
+
+
+    #region -> Implementation
+    /// <summary>
+    /// Gets the minimum departure date of the flights in the schedule
+    /// </summary>
+    /// <returns>The minimum departure date</returns>
+    private DateTime GetMinDepartureDate()
+    {
+        DateTime minDate = DateTime.MaxValue;
+        foreach (ShRouteSchedule schedule in _routes.Values)
+        {
+            DateTime date = schedule.Flights
+                .Select(f => f.DepartureNormal.Date).Min();
+
+            if (date < minDate)
+            {
+                minDate = date;
+            }
+        }
+
+        return minDate;
+    }
     #endregion
 
 
