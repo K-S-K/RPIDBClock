@@ -1,5 +1,5 @@
-using System;
 using RPIDBClock.CLK;
+using RPIDBClock.Log;
 
 namespace RPIDBClock.Tests;
 
@@ -35,5 +35,19 @@ public class TimerServiceTests
         timerService.Resume();
         await Task.Delay(delay);
         Assert.Equal(6, tickCount);
+    }
+
+    [Fact]
+    public void TmrStubTest()
+    {
+        // Arrange
+        ISimpleLogger logger = new SimpleLogger();
+        TmrStub tmrStub = new(logger);
+
+        // Act
+        tmrStub.FireTimerEvent();
+
+        // Assert
+        Assert.Contains("TimerStub: FireTimerEvent()", logger.Log);
     }
 }

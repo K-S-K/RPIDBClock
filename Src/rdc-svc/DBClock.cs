@@ -26,7 +26,7 @@ public class DBClock : IDBClock
     /// <summary>
     /// The timer service.
     /// </summary>
-    private readonly ITimerService timerService;
+    private readonly ITimerService tmr;
     #endregion
 
 
@@ -41,17 +41,15 @@ public class DBClock : IDBClock
     /// This constructor initializes the NTP client, the LCD display, and the RTC service.
     /// It also prepares the LCD display and the timer for the clock update.
     /// </remarks>
-    public DBClock(INTPService ntp, ILCDService lcd, IRTCService rtc)
+    public DBClock(ITimerService tmr, INTPService ntp, ILCDService lcd, IRTCService rtc)
     {
+        this.tmr = tmr;
         this.ntp = ntp;
         this.lcd = lcd;
         this.rtc = rtc;
 
-        // Create a timer service that triggers an event every second.
-        timerService = new TimerService(1000);
-
         // Subscribe to the timer event to update the clock.
-        timerService.TimerEvent += (sender, args) => OnTimer(args);
+        tmr.TimerEvent += (sender, args) => OnTimer(args);
 
         // Prepare the LCD display.
         lcd.PrepareDisplay();
@@ -106,19 +104,19 @@ public class DBClock : IDBClock
     /// <summary>
     /// Pauses the timer.
     /// </summary>
-    public void Pause() => timerService.Pause();
+    public void Pause() => tmr.Pause();
 
     /// <summary>
     /// Resumes the timer.
     /// </summary>
-    public void Resume() => timerService.Resume();
+    public void Resume() => tmr.Resume();
 
     /// <summary>
     /// Releases all resources used by the current instance.
     /// </summary>
     public void Dispose()
     {
-        timerService?.Dispose();
+        tmr?.Dispose();
     }
     #endregion
 }
