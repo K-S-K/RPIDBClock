@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using System.Text.RegularExpressions;
 
 using RPIDBClock.Log;
+using RPIDBClock.CLK;
 using RPIDBClock.LCD;
 using RPIDBClock.RTC;
 using RPIDBClock.NET.NTP;
@@ -27,6 +28,9 @@ internal class Program
 
         // Register SimpleLogger service
         builder.Services.AddSingleton<ISimpleLogger, SimpleLogger>();
+
+        // Register Timer service with 1 second interval
+        builder.Services.AddSingleton<ITimerService>(new TimerService(1000));
 
         // Register LCD service
         builder.Services.AddSingleton<ILCDService>(provider =>
