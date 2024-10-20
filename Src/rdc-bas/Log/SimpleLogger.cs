@@ -1,5 +1,3 @@
-using System.Text;
-
 namespace RPIDBClock.Log;
 
 /// <summary>
@@ -8,40 +6,48 @@ namespace RPIDBClock.Log;
 public class SimpleLogger : ISimpleLogger
 {
     /// <summary>
-    /// Log data collector.
+    /// The log events collection.
     /// </summary>
-    /// <remarks>
-    /// This field collects the log data during the interaction with the LCD display.
-    /// </remarks>
-    private readonly StringBuilder _log = new();
+    private SortedDictionary<int, LogEvent> _logEvents = [];
 
     /// <summary>
-    /// The log data collected during the interaction with the LCD display.
+    /// Adds the specified event to the log.
     /// </summary>
-    /// <remarks>
-    /// This property provides the log data collected during the interaction with the LCD display.
-    /// </remarks>
-    public string Log => _log.ToString();
-
-    /// <summary>
-    /// Writes the specified message to the console and the log.
-    /// </summary>
-    public void AddLine(string message)
+    /// <param name="logEvent">The log event.</param>
+    public void AddEvent(LogEvent logEvent)
     {
-        _log.AppendLine(message);
-        Console.WriteLine(message);
+        Console.WriteLine($"{logEvent}");
+        _logEvents.Add(_logEvents.Count, logEvent);
     }
 
     /// <summary>
-    /// Adds a separator to the log.
+    /// Adds the specified event to the log.
     /// </summary>
-    public void AddLogSeparator()
-        => AddLine("--------------------------------------------------");
+    /// <param name="logEventClass">The log event class.</param>
+    /// <param name="logEventMethod">The log event method.</param>
+    /// <param name="message">The message.</param>
+    public void AddEvent(LogEventClass logEventClass, LogEventMethod logEventMethod, string message = "")
+        => AddEvent(new LogEvent(logEventClass, logEventMethod, message));
 
     /// <summary>
-    /// Adds a separator with the specified message to the log.
+    /// Checks if the log contains the specified event.
     /// </summary>
-    public void AddLogSeparator(string message)
-        => AddLine($"--------------------------------------- {message}");
+    /// <param name="logEventClass">The log event class.</param>
+    /// <param name="logEventMethod">The log event method.</param>
+    /// <param name="message">The message.</param>
+    /// <returns>True if the log contains the specified event; otherwise, false.</returns>
+    public bool ContainsEvent(LogEventClass logEventClass, LogEventMethod logEventMethod, string message = "")
+    {
+        foreach (var logEvent in _logEvents)
+        {
+            if (logEvent.Value.LogEventClass == logEventClass &&
+                logEvent.Value.LogEventMethod == logEventMethod &&
+                logEvent.Value.Message == message)
+            {
+                return true;
+            }
+        }
 
+        return false;
+    }
 }

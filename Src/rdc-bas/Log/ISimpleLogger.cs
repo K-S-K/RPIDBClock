@@ -7,26 +7,22 @@ namespace RPIDBClock.Log;
 /// </summary>
 public interface ISimpleLogger
 {
-    /// <summary>
-    /// The log data collected during the interaction with the LCD display.
-    /// </summary>
-    /// <remarks>
-    /// This property provides the log data collected during the interaction with the LCD display.
-    /// </remarks>
-    string Log { get; }
+  void AddEvent(LogEvent logEvent);
 
-    /// <summary>
-    /// Writes the specified message to the console and the log.
-    /// </summary>
-    void AddLine(string message);
+  /// <summary>
+  /// Adds the specified event to the log.
+  /// </summary>
+  /// <param name="logEventClass">The log event class.</param>
+  /// <param name="logEventMethod">The log event method.</param>
+  /// <param name="message">The message.</param>
+  void AddEvent(LogEventClass logEventClass, LogEventMethod logEventMethod, string message = "");
 
-    /// <summary>
-    /// Adds an empty separator to the log.
-    /// </summary>
-    void AddLogSeparator();
-
-    /// <summary>
-    /// Adds a separator with the specified message to the log.
-    /// </summary>
-    void AddLogSeparator(string message);
+  /// <summary>
+  /// Checks if the log contains the specified event.
+  /// </summary>
+  /// <param name="logEventClass">The log event class.</param>
+  /// <param name="logEventMethod">The log event method.</param>
+  /// <param name="message">The message.</param>
+  /// <returns>True if the log contains the specified event; otherwise, false.</returns>
+  bool ContainsEvent(LogEventClass logEventClass, LogEventMethod logEventMethod, string message = "");
 }

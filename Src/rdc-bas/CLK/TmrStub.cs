@@ -25,24 +25,24 @@ public class TmrStub(ISimpleLogger logger) : ITimerService
     /// </summary>
     public void FireTimerEvent()
     {
-        _logger.AddLine("TimerStub: FireTimerEvent()");
+        _logger.AddEvent(LogEventClass.Timer, LogEventMethod.FireTimerEvent);
         TimerEvent?.Invoke(this, new TimerEventArgs(DateTime.MinValue));
     }
 
     /// <summary>
     /// Registers The Dispose method call.
     public void Dispose()
-        => _logger.AddLine("TimerStub: Dispose()");
+        => _logger.AddEvent(LogEventClass.Timer, LogEventMethod.Dispose);
 
     /// <summary>
     /// Registers the Pause method call.
     /// </summary>
     public void Pause()
-        => _logger.AddLine("TimerStub: Pause()");
+        => _logger.AddEvent(LogEventClass.Timer, LogEventMethod.Pause);
 
     /// <summary>
     /// Registers the Resume method call.
     /// </summary>
     public void Resume()
-        => _logger.AddLine("TimerStub: Resume()");
+        => _logger.AddEvent(LogEventClass.Timer, LogEventMethod.Resume);
 }
