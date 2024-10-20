@@ -22,11 +22,8 @@ public class DBClockTests
         // Arrange and Act
         DBClock clock = new(_tmr, _ntp, _lcd, _rtc);
 
-        // Get the log data from the LCDStub.
-        string log = logger.Log;
-
         // Assert
-        Assert.Contains("LCDStub: PrepareDisplay()\n", log);
+        Assert.True(logger.ContainsEvent(LogEventClass.LCD, LogEventMethod.PrepareDisplay));
     }
 
     [Fact]
@@ -46,13 +43,8 @@ public class DBClockTests
         // Resume the clock.
         clock.Resume();
 
-        // _tmr.FireTimerEvent();
-
-        // Get the log data from the LCDStub.
-        string log = logger.Log;
-
         // Assert
-        Assert.Contains("LCDStub: PrepareDisplay()\n", log);
-        Assert.Contains("LCDStub: PrepareDisplay()\n", log);
+        Assert.True(logger.ContainsEvent(LogEventClass.LCD, LogEventMethod.PrepareDisplay));
+        Assert.True(logger.ContainsEvent(LogEventClass.Timer, LogEventMethod.Resume));
     }
 }

@@ -38,7 +38,7 @@ public class TimerServiceTests
     }
 
     [Fact]
-    public void TmrStubTest()
+    public void TmrStubFireEventTest()
     {
         // Arrange
         ISimpleLogger logger = new SimpleLogger();
@@ -48,6 +48,23 @@ public class TimerServiceTests
         tmrStub.FireTimerEvent();
 
         // Assert
-        Assert.Contains("TimerStub: FireTimerEvent()", logger.Log);
+        Assert.True(logger.ContainsEvent(LogEventClass.Timer, LogEventMethod.FireTimerEvent));
+    }
+
+
+    [Fact]
+    public void TmrStubPauseAndResumeTest()
+    {
+        // Arrange
+        ISimpleLogger logger = new SimpleLogger();
+        TmrStub tmrStub = new(logger);
+
+        // Act
+        tmrStub.Pause();
+        tmrStub.Resume();
+
+        // Assert
+        Assert.True(logger.ContainsEvent(LogEventClass.Timer, LogEventMethod.Pause));
+        Assert.True(logger.ContainsEvent(LogEventClass.Timer, LogEventMethod.Resume));
     }
 }

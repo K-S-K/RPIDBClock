@@ -42,6 +42,6 @@ public class RTCStub(ISimpleLogger logger) : IRTCService
     /// </summary>
     /// <param name="time"></param>
     public void WriteTime(DateTime time)
-        => _logger.AddLine($"RTCStub: WriteTime({time})");
+        => _logger.AddEvent(LogEventClass.RTC, LogEventMethod.WriteTime, $"Time: {time}");
     #endregion
 }

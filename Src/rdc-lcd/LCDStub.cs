@@ -16,7 +16,7 @@ public class LCDStub(ISimpleLogger logger) : ILCDService
     /// <summary>
     /// Clears the LCD display.
     /// </summary>
-    public void Clear() => _logger.AddLine("LCDStub: Clear()");
+    public void Clear() => _logger.AddEvent(LogEventClass.LCD, LogEventMethod.Clear);
 
     /// <summary>
     /// Writes the specified text to the LCD display at the specified location.
@@ -31,7 +31,7 @@ public class LCDStub(ISimpleLogger logger) : ILCDService
             }
         }
 
-        _logger.AddLine($"LCDStub: Write({row}, {col}, \"{text}\")");
+        _logger.AddEvent(LogEventClass.LCD, LogEventMethod.Write, $"Row: {row}, Col: {col}, Text: {text}");
     }
 
     /// <summary>
@@ -44,11 +44,11 @@ public class LCDStub(ISimpleLogger logger) : ILCDService
     /// </summary>
     /// <param name="level">The brightness level (0-255).</param>
     public void SetBrightness(int level)
-        => _logger.AddLine($"LCDStub: SetBrightness({level})");
+        => _logger.AddEvent(LogEventClass.LCD, LogEventMethod.SetBrightness, $"Level: {level}");
 
     /// <summary>
     /// Prepares the LCD display.
     /// </summary>
     public void PrepareDisplay()
-        => _logger.AddLine("LCDStub: PrepareDisplay()");
+        => _logger.AddEvent(LogEventClass.LCD, LogEventMethod.PrepareDisplay);
 }
