@@ -126,7 +126,7 @@ public class DS3231 : IDisposable
     /// <returns>The decimal value converted from the BCD value.</returns>
     private static int BcdToDec(byte bcd)
     {
-        return ((bcd / 16 * 10) + (bcd % 16));
+        return (bcd / 16 * 10) + (bcd % 16);
     }
 
     /// <summary>

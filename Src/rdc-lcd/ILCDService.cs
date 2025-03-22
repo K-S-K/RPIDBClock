@@ -37,7 +37,7 @@ public interface ILCDService
     /// Creates a custom character for the LCD display at the specified location using the provided character map.
     /// </summary>
     /// <param name="location">The location where the custom character will be stored (0-7).</param>
-    /// <param name="charmap">The character map representing the custom character.</param>
+    /// <param name="charMap">The character map representing the custom character.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the location is invalid.</exception>
     /// <exception cref="ArgumentNullException">Thrown when the character map is null or empty.</exception>
     /// <exception cref="Exception">Thrown when an unknown error occurs.</exception>
@@ -65,7 +65,7 @@ public interface ILCDService
     /// }
     /// </code>
     /// </example>
-    void CreateCustomCharacter(byte location, byte[] charmap);
+    void CreateCustomCharacter(byte location, byte[] charMap);
 
     /// <summary>
     /// Sets the brightness level of the LCD display.

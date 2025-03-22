@@ -125,6 +125,7 @@ public class HD44780 : IDisposable
     /// <summary>
     /// Initializes a new instance of the <see cref="HD44780"/> class with the specified I2C device.
     /// </summary>
+    /// <param name="device">The I2C device used to communicate with the LCD display.</param>
     public HD44780(byte deviceAddress)
     {
         lock (_sync)
@@ -170,14 +171,14 @@ public class HD44780 : IDisposable
     /// Creates a custom character for the LCD display at the specified location using the provided character map.
     /// </summary>
     /// <param name="location">The location where the custom character will be stored (0-7).</param>
-    /// <param name="charmap">The character map representing the custom character.</param>
-    public void CreateCustomCharacter(byte location, byte[] charmap)
+    /// <param name="charMap">The character map representing the custom character.</param>
+    public void CreateCustomCharacter(byte location, byte[] charMap)
     {
         lock (_sync)
         {
             location &= 0x7; // Only 8 locations available
             SendCommand((byte)(LCD_CGRAM_ADDR | (location << 3)));
-            foreach (var line in charmap)
+            foreach (var line in charMap)
             {
                 SendData(line);
             }

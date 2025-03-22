@@ -21,6 +21,9 @@ public class LCDStub(ISimpleLogger logger) : ILCDService
     /// <summary>
     /// Writes the specified text to the LCD display at the specified location.
     /// </summary>
+    /// <param name="row">The row index of the cursor position.</param>
+    /// <param name="col">The column index of the cursor position.</param>
+    /// <param name="text">The text to be written.</param>
     public void Write(int row, int col, string text)
     {
         if (text.Length == 1)
@@ -37,7 +40,9 @@ public class LCDStub(ISimpleLogger logger) : ILCDService
     /// <summary>
     /// Creates a custom character for the LCD display at the specified location using the provided character map.
     /// </summary>
-    public void CreateCustomCharacter(byte location, byte[] charmap) { }
+    /// <param name="location">The location where the custom character will be stored (0-7).</param>
+    /// <param name="charMap">The character map representing the custom character.</param>
+    public void CreateCustomCharacter(byte location, byte[] charMap) { }
 
     /// <summary>
     /// Sets the backlight brightness level of the LCD display.

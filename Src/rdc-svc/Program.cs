@@ -67,7 +67,7 @@ internal class Program
         // Open the port for incoming connections
         OpenPortForIncomingConnections(hostUrl);
 
-        // Ressolve and start DBClock service.
+        // Resolve and start DBClock service.
         IDBClock clock = app.Services.GetRequiredService<IDBClock>();
         clock.Start();
 

@@ -81,7 +81,7 @@ public class LCDService : ILCDService
     /// Creates a custom character for the LCD display at the specified location using the provided character map.
     /// </summary>
     /// <param name="location">The location where the custom character will be stored (0-7).</param>
-    /// <param name="charmap">The character map representing the custom character.</param>
+    /// <param name="charMap">The character map representing the custom character.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the location is invalid.</exception>
     /// <exception cref="ArgumentNullException">Thrown when the character map is null or empty.</exception>
     /// <exception cref="Exception">Thrown when an unknown error occurs.</exception>
@@ -109,18 +109,18 @@ public class LCDService : ILCDService
     /// }
     /// </code>
     /// </example>
-    public void CreateCustomCharacter(byte location, byte[] charmap)
+    public void CreateCustomCharacter(byte location, byte[] charMap)
     {
         if (location < 0 || location > 7)
         {
             throw new ArgumentOutOfRangeException(nameof(location), "Location must be between 0 and 7.");
         }
-        if (charmap == null || charmap.Length == 0)
+        if (charMap == null || charMap.Length == 0)
         {
-            ArgumentNullException.ThrowIfNull(charmap, nameof(charmap));
+            ArgumentNullException.ThrowIfNull(charMap, nameof(charMap));
         }
 
-        _lcd.CreateCustomCharacter(location, charmap);
+        _lcd.CreateCustomCharacter(location, charMap);
     }
 
     /// <summary>

@@ -98,6 +98,7 @@ public class ShRouteSchedule
     /// <summary>
     /// Initializes a new instance of the route schedule.
     /// </summary>
+    /// <param name="route">The route of the schedule</param>
     public ShRouteSchedule(ShFlightRoute route)
     {
         Route = route;

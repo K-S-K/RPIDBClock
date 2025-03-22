@@ -2,7 +2,7 @@ using System.Text.Json.Nodes;
 
 namespace RPIDBClock.NET.VRN;
 
-public class VRNResponce
+public class VRNResponse
 {
     private const string _format = "dd.MM.yyyy HH:mm";
 
@@ -52,6 +52,4 @@ public class VRNResponce
         }
         return records;
     }
-
-
 }

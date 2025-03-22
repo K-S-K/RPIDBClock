@@ -104,14 +104,14 @@ public class NTPService : INTPService
 
         // Get the current time from the NTP data buffer.
         const byte serverReplyTime = 40;
-        ulong intPart = BitConverter.ToUInt32(ntpData, serverReplyTime);
-        ulong fractPart = BitConverter.ToUInt32(ntpData, serverReplyTime + 4);
+        ulong integerPart = BitConverter.ToUInt32(ntpData, serverReplyTime);
+        ulong fractionPart = BitConverter.ToUInt32(ntpData, serverReplyTime + 4);
 
-        intPart = SwapEndianness(intPart);
-        fractPart = SwapEndianness(fractPart);
+        integerPart = SwapEndianness(integerPart);
+        fractionPart = SwapEndianness(fractionPart);
 
-        var milliseconds = (intPart * 1000) + ((fractPart * 1000) / 0x100000000L);
-        DateTime networkDateTime = (new DateTime(1900, 1, 1)).AddMilliseconds((long)milliseconds);
+        var milliseconds = (integerPart * 1000) + (fractionPart * 1000 / 0x100000000L);
+        DateTime networkDateTime = new DateTime(1900, 1, 1).AddMilliseconds((long)milliseconds);
 
         return networkDateTime;
     }

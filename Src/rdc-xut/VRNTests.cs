@@ -28,7 +28,7 @@ public class VRNTests
         // Read the JSON file
         string jsonString = File.ReadAllText(jsonFilePath);
 
-        List<VRNTrainTrip> trips = VRNResponce.ParseJson(jsonString);
+        List<VRNTrainTrip> trips = VRNResponse.ParseJson(jsonString);
 
         Assert.Equal(tripCount, trips.Count);
         Assert.Equal(firstTrip, $"{trips[0]}");
@@ -240,7 +240,7 @@ public class VRNTests
             string jsonString = File.ReadAllText(jsonFilePath);
 
             // Parse the JSON file
-            List<VRNTrainTrip> trips = VRNResponce.ParseJson(jsonString);
+            List<VRNTrainTrip> trips = VRNResponse.ParseJson(jsonString);
 
             // Add the trips to the schedule
             foreach (VRNTrainTrip trip in trips)
