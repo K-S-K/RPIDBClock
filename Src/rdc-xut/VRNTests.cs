@@ -144,6 +144,68 @@ public class VRNTests
     }
 
     /// <summary>
+    /// Schedule Reading Test
+    /// </summary>
+    /// <exception cref="FileNotFoundException"></exception>
+    [Fact]
+    public void ScheduleRequestingTest()
+    {
+        // Prepare the path to the JSON file
+        string fileName = Path.Combine(_dir, "Schedule2.json");
+
+        // Read the JSON file
+        string jsSchedule = File.ReadAllText(fileName)
+            ?? throw new FileNotFoundException(fileName);
+
+        // Deserialize the schedule from the JSON string
+        ShGlobalSchedule schedule = JsonSerializer
+            .Deserialize<ShGlobalSchedule>(jsSchedule, _jso);
+
+
+        schedule.ShiftToDate(new DateTime(2024, 9, 3));
+
+        ShFlightRoute route = new()
+        {
+            Orig = "Ludwigshafen, Hauptbahnhof",
+            Dest = "Heidelberg, Hauptbahnhof",
+        };
+
+        // Get the flights from the schedule
+        IReadOnlyList<ShFlightItem> flights8h20m =
+            schedule.GetFlights(route, new DateTime(2024, 9, 3, 8, 20, 0), 2);
+        IReadOnlyList<ShFlightItem> flights8h21m =
+            schedule.GetFlights(route, new DateTime(2024, 9, 3, 8, 21, 0), 2);
+        IReadOnlyList<ShFlightItem> flights8h25m =
+            schedule.GetFlights(route, new DateTime(2024, 9, 3, 8, 25, 0), 2);
+
+        IReadOnlyList<ShFlightItem> flights8h29m =
+            schedule.GetFlights(route, new DateTime(2024, 9, 3, 8, 29, 0), 2);
+        IReadOnlyList<ShFlightItem> flights8h30m =
+            schedule.GetFlights(route, new DateTime(2024, 9, 3, 8, 30, 0), 2);
+
+        Assert.Equal(2, flights8h20m.Count);
+        Assert.Equal(2, flights8h21m.Count);
+        Assert.Equal(2, flights8h25m.Count);
+        Assert.Equal(2, flights8h29m.Count);
+        Assert.Equal(2, flights8h30m.Count);
+
+        Assert.Equal(new DateTime(2024, 9, 3, 8, 20, 0), flights8h20m[0].DepartureExpected);
+        Assert.Equal(new DateTime(2024, 9, 3, 8, 28, 0), flights8h20m[1].DepartureExpected);
+
+        Assert.Equal(new DateTime(2024, 9, 3, 8, 28, 0), flights8h21m[0].DepartureExpected);
+        Assert.Equal(new DateTime(2024, 9, 3, 8, 47, 0), flights8h21m[1].DepartureExpected);
+
+        Assert.Equal(new DateTime(2024, 9, 3, 8, 28, 0), flights8h25m[0].DepartureExpected);
+        Assert.Equal(new DateTime(2024, 9, 3, 8, 47, 0), flights8h25m[1].DepartureExpected);
+
+        Assert.Equal(new DateTime(2024, 9, 3, 8, 47, 0), flights8h29m[0].DepartureExpected);
+        Assert.Equal(new DateTime(2024, 9, 3, 8, 57, 0), flights8h29m[1].DepartureExpected);
+
+        Assert.Equal(new DateTime(2024, 9, 3, 8, 47, 0), flights8h30m[0].DepartureExpected);
+        Assert.Equal(new DateTime(2024, 9, 3, 8, 57, 0), flights8h30m[1].DepartureExpected);
+    }
+
+    /// <summary>
     /// Fill the schedule with the trips from the JSON files
     /// </summary>
     /// <remarks>

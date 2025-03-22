@@ -17,6 +17,17 @@ public class ShGlobalSchedule
     /// The expiration time of the schedule
     /// </summary>
     private DateTime _expirationTime = DateTime.MinValue;
+
+
+    /// <summary>
+    /// The last requested route for the cache
+    /// </summary>
+    private ShFlightRoute? LastRequestedRoute;
+
+    /// <summary>
+    /// The flights of last response for the cache
+    /// </summary>
+    private IReadOnlyList<ShFlightItem>? LastResponseFlights;
     #endregion
 
 
@@ -83,6 +94,28 @@ public class ShGlobalSchedule
     }
 
     /// <summary>
+    /// Checks if the last response is expired
+    /// </summary>
+    /// <param name="route">The route to check the response for</param>
+    /// <param name="from">The date and time to check from</param>
+    /// <returns>True if the last response is expired, otherwise false</returns>
+    public bool IsLastResponseExpired(ShFlightRoute route, DateTime from)
+    {
+        if (_expirationTime > DateTime.MinValue)
+        {
+            if (from < _expirationTime)
+            {
+                if (LastRequestedRoute == route)
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /// <summary>
     /// Gets the flights from the specified date and time
     /// </summary>
     /// <param name="route">The route to get the flights for</param>
@@ -92,6 +125,13 @@ public class ShGlobalSchedule
     /// 
     public IReadOnlyList<ShFlightItem> GetFlights(ShFlightRoute route, DateTime from, int count = 2)
     {
+        // If the last response is not expired
+        if (!IsLastResponseExpired(route, from))
+        {
+            return LastResponseFlights ?? [];
+        }
+
+        // Get the schedule
         if (TryGetRouteSchedule(route, out ShRouteSchedule? schedule))
         {
             var result = schedule?.GetFlights(from, count) ?? [];
@@ -103,6 +143,9 @@ public class ShGlobalSchedule
                 _expirationTime =
                     result.Min(f => f.DepartureNormal);
             }
+
+            LastRequestedRoute = route;
+            LastResponseFlights = result;
 
             return result;
         }
@@ -131,18 +174,6 @@ public class ShGlobalSchedule
     #endregion
 
 
-    #region -> Implementation
-    /// <summary>
-    /// Tries to get the route schedule
-    /// </summary>
-    /// <param name="route">The route to get the schedule for</param>
-    /// <param name="schedule">The schedule of the route</param>
-    /// <returns>True if the route schedule is found, otherwise false</returns>    
-    private bool TryGetRouteSchedule(ShFlightRoute route, out ShRouteSchedule? schedule)
-        => _routes.TryGetValue(route, out schedule);
-    #endregion
-
-
     #region -> Overrides
     /// <summary>
     /// The string representation of the Global Schedule for the debug purposes
@@ -152,6 +183,15 @@ public class ShGlobalSchedule
 
 
     #region -> Implementation
+    /// <summary>
+    /// Tries to get the route schedule
+    /// </summary>
+    /// <param name="route">The route to get the schedule for</param>
+    /// <param name="schedule">The schedule of the route</param>
+    /// <returns>True if the route schedule is found, otherwise false</returns>    
+    private bool TryGetRouteSchedule(ShFlightRoute route, out ShRouteSchedule? schedule)
+        => _routes.TryGetValue(route, out schedule);
+
     /// <summary>
     /// Gets the minimum departure date of the flights in the schedule
     /// </summary>
