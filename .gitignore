@@ -7,6 +7,9 @@ obj/
 # Deployment directory:
 out/
 
+#Publish directory:
+publish/
+
 # Docker Storage:
 .DS_Store
 
