@@ -122,7 +122,6 @@ public class ShGlobalSchedule
     /// <param name="from">The date and time to start from</param>
     /// <param name="count">The count of the flights to get</param>
     /// <returns>The list of the flights</returns>
-    /// 
     public IReadOnlyList<ShFlightItem> GetFlights(ShFlightRoute route, DateTime from, int count = 2)
     {
         // If the last response is not expired

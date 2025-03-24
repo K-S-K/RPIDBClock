@@ -2,6 +2,7 @@ using RPIDBClock.CLK;
 using RPIDBClock.LCD;
 using RPIDBClock.RTC;
 using RPIDBClock.NET.NTP;
+using RPIDBClock.Svc.Schedule;
 
 namespace RPIDBClock.Svc;
 
@@ -27,6 +28,11 @@ public class DBClock : IDBClock
     /// The timer service.
     /// </summary>
     private readonly ITimerService tmr;
+
+    /// <summary>
+    /// The global schedule.
+    /// </summary>
+    private readonly IScheduleService sch;
     #endregion
 
 
@@ -41,12 +47,13 @@ public class DBClock : IDBClock
     /// This constructor initializes the NTP client, the LCD display, and the RTC service.
     /// It also prepares the LCD display and the timer for the clock update.
     /// </remarks>
-    public DBClock(ITimerService tmr, INTPService ntp, ILCDService lcd, IRTCService rtc)
+    public DBClock(ITimerService tmr, INTPService ntp, ILCDService lcd, IRTCService rtc, IScheduleService sch)
     {
         this.tmr = tmr;
         this.ntp = ntp;
         this.lcd = lcd;
         this.rtc = rtc;
+        this.sch = sch;
 
         // Subscribe to the timer event to update the clock.
         tmr.TimerEvent += (sender, args) => OnTimer(args);
@@ -69,7 +76,12 @@ public class DBClock : IDBClock
     private void OnTimer(TimerEventArgs args)
     {
         // Display the current time and temperature on the LCD display.
-        DateTime time = args.Time.ToLocalTime();
+        DateTime time = args.Time.ToLocalTime()
+        - TimeSpan.FromHours(16)
+        ;
+
+        IReadOnlyList<ShFlightItem> flights = sch.GetFlights(time, 2);
+
         double temp = double.Round(rtc.ReadTemperature(), 1, MidpointRounding.ToEven);
 
         TimeZoneInfo.ClearCachedData();
@@ -77,7 +89,22 @@ public class DBClock : IDBClock
 
         lcd.Write(0, 1, $"{time:yyyy.MM.dd HH:mm:ss}");
         lcd.Write(1, 1, $"Temperature: {temp:F1}");
-        lcd.Write(2, 1, $"{tz.Id,-19}");
+
+        //*
+        if (flights.Count > 0)
+        {
+            lcd.Write(2, 1, $"{flights[0]}");
+        }
+
+        if (flights.Count > 1)
+        {
+            lcd.Write(3, 1, $"{flights[1]}");
+        }
+        if (flights.Count == 0)
+        {
+            lcd.Write(2, 1, $"{tz.Id,-19}");
+        }
+        //*/
 
         Console.WriteLine($"Time: {time:yyyy.MM.dd HH:mm:ss}  Temperature: {rtc.ReadTemperature()}°C");
     }
@@ -85,6 +112,22 @@ public class DBClock : IDBClock
 
 
     #region -> Methods
+    /// <summary>
+    /// Loads the schedule and  other preparations.
+    /// </summary>
+    public void Prepare()
+    {
+        // Load the schedule from the JSON file.
+        sch.Load();
+
+        // Set the route for the schedule.
+        sch.Route = new()
+        {
+            Orig = "Ludwigshafen, Hauptbahnhof",
+            Dest = "Heidelberg, Hauptbahnhof",
+        };
+    }
+
     /// <summary>
     /// Starts the clock.
     /// </summary>

@@ -3,6 +3,11 @@ namespace RPIDBClock.Svc;
 public interface IDBClock : IDisposable
 {
     /// <summary>
+    /// Loads the schedule and  other preparations.
+    /// </summary>
+    void Prepare();
+
+    /// <summary>
     /// Starts the clock.
     /// </summary>
     /// <remarks>
