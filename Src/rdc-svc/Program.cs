@@ -7,6 +7,7 @@ using RPIDBClock.CLK;
 using RPIDBClock.LCD;
 using RPIDBClock.RTC;
 using RPIDBClock.NET.NTP;
+using RPIDBClock.Svc.Schedule;
 
 namespace RPIDBClock.Svc;
 
@@ -21,6 +22,8 @@ internal class Program
     /// <param name="args">The command-line arguments.</param>
     private static void Main(string[] args)
     {
+        Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+
         var builder = WebApplication.CreateBuilder(args);
 
         // Bind I2CSettings section to I2CSettings class
@@ -54,6 +57,9 @@ internal class Program
         builder.Services.AddSingleton<INTPService, NTPService>();
         builder.Services.AddSingleton<IDBClock, DBClock>();
 
+        // Register Schedule service
+        builder.Services.AddSingleton<IScheduleService, ScheduleService>();
+
         //  Build the application
         var app = builder.Build();
 
@@ -69,6 +75,7 @@ internal class Program
 
         // Resolve and start DBClock service.
         IDBClock clock = app.Services.GetRequiredService<IDBClock>();
+        clock.Prepare();
         clock.Start();
 
         // Register routes

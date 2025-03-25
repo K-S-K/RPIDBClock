@@ -16,4 +16,11 @@
     <OutputPath>..\..\Bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Update="Schedule.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

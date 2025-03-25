@@ -246,17 +246,9 @@ public class LCDService : ILCDService
 
         // Prepare the LCD display.
         Clear();
-        Write(1, 18, "\x00");  // Display the custom character (°)
-        Write(1, 19, "C");  // Display the temperature unit (C)
 
         // Display the custom character (🕒) for the clock symbol.
         Write(0, 0, "\x01");
-
-        // Display the custom character (🌡) for the temperature symbol.
-        Write(1, 0, "\x02");
-
-        // Display the custom character (🌍) for the earth symbol
-        Write(2, 0, "\x04");
     }
     #endregion
 }
