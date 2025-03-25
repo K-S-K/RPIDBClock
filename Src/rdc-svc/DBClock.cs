@@ -76,9 +76,7 @@ public class DBClock : IDBClock
     private void OnTimer(TimerEventArgs args)
     {
         // Display the current time and temperature on the LCD display.
-        DateTime time = args.Time.ToLocalTime()
-        - TimeSpan.FromHours(16)
-        ;
+        DateTime time = args.Time.ToLocalTime();
 
         IReadOnlyList<ShFlightItem> flights = sch.GetFlights(time, 2);
 
@@ -88,7 +86,19 @@ public class DBClock : IDBClock
         var tz = TimeZoneInfo.Local;
 
         lcd.Write(0, 1, $"{time:yyyy.MM.dd HH:mm:ss}");
-        lcd.Write(1, 1, $"Temperature: {temp:F1}");
+
+        if (time.Second % 10 == 0)
+        {
+            lcd.Write(1, 0, "\x02");
+            lcd.Write(1, 1, $"Temperature: {temp:F1} C");
+            lcd.Write(1, 18, "\x00");
+        }
+        else
+        {
+            //lcd.Write(1, 0, $" LU Hbf -> HD Hbf   ");
+            lcd.Write(1, 0, $" Ludw.Hbf - Heid.Hbf");
+        }
+
 
         //*
         if (flights.Count > 0)
