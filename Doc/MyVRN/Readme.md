@@ -4,6 +4,10 @@
 
 <https://www.vrn.de/mng/#/XSLT_TRIP_REQUEST2@init?mode=sharing&restriction=0&orig=6002080&dest=6001160&date=28.08.2024&time=09:00&isDeparture=true>
 
+<https://www.vrn.de/mng/#/XSLT_TRIP_REQUEST2@init?mode=sharing&restriction=0&orig=6002080&dest=6001160&date=26.03.2025&time=00:00&isDeparture=true>
+
+XML_TRIP_REQUEST2?ca
+
 ## Main Page URL 2
 
 <https://www.vrn.de/mng/#/XSLT_TRIP_REQUEST2@init?mode=sharing&restriction=0&orig=6001160&dest=6002080&date=29.08.2024&time=16:015&isDeparture=true>
