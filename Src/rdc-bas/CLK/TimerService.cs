@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace RPIDBClock.CLK;
 
 /// <summary>
@@ -14,6 +16,11 @@ public class TimerService : ITimerService
     /// Occurs when the timer triggers an event.
     /// </summary>
     public event EventHandler<TimerEventArgs>? TimerEvent;
+
+    /// <summary>
+    /// The event for returning log messages.
+    /// </summary>
+    public event EventHandler<string>? LogEvent;
 
     #region -> Fields
     /// <summary>
@@ -59,6 +66,61 @@ public class TimerService : ITimerService
     {
         timer?.Dispose();
     }
+
+    /// <summary>
+    /// Sets the system time.
+    /// </summary>
+    /// <param name="utcTime">The time to set.</param>
+    public void SetSystemTime(DateTime utcTime)
+    {
+        bool isProd = (Environment.GetEnvironmentVariable(
+            "ASPNETCORE_ENVIRONMENT") ?? "Production") == "Production";
+
+        if (!isProd)
+        {
+            LogEvent?.Invoke(this, $"Skip SetSystemTime");
+            return;
+        }
+
+        try
+        {
+            // Command to set system time in UTC
+            string command = $"sudo date -u -s '{utcTime:yyyy-MM-dd HH:mm:ss}'";
+
+            ProcessStartInfo psi = new()
+            {
+                FileName = "/bin/bash",
+                Arguments = $"-c \"{command}\"",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            Process process = new() { StartInfo = psi };
+            process.Start();
+            string output = process.StandardOutput.ReadToEnd();
+            string error = process.StandardError.ReadToEnd();
+            process.WaitForExit();
+
+            if (!string.IsNullOrEmpty(error))
+            {
+                LogEvent?.Invoke(this, error);
+            }
+            else
+            {
+                LogEvent?.Invoke(this, $"Success: {output}");
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+            LogEvent?.Invoke(this, $"Exception: {ex.Message}");
+        }
+    }
+
+    public DateTime GetSystemTime() => DateTime.UtcNow;
     #endregion
 
 

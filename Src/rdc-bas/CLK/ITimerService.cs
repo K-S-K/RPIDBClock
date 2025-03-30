@@ -14,6 +14,11 @@ public interface ITimerService : IDisposable
     event EventHandler<TimerEventArgs>? TimerEvent;
 
     /// <summary>
+    /// The event for returning log messages.
+    /// </summary>
+    event EventHandler<string>? LogEvent;
+
+    /// <summary>
     /// Pauses the timer.
     /// </summary>
     void Pause();
@@ -22,4 +27,10 @@ public interface ITimerService : IDisposable
     /// Resumes the timer.
     /// </summary>
     void Resume();
+
+    /// <summary>
+    /// Sets the system time.
+    /// </summary>
+    /// <param name="utcTime">The system time in UTC.</param>
+    void SetSystemTime(DateTime utcTime);
 }

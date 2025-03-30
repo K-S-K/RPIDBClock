@@ -72,5 +72,10 @@ public enum LogEventMethod
     /// <summary>
     /// Represents the WriteTime method.
     /// </summary>
-    WriteTime
+    WriteTime,
+
+    /// <summary>
+    /// Represents the SetSystemTime method.
+    /// </summary>
+    SetSystemTime,
 }

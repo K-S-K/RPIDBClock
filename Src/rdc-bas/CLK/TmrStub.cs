@@ -21,6 +21,11 @@ public class TmrStub(ISimpleLogger logger) : ITimerService
     public event EventHandler<TimerEventArgs>? TimerEvent;
 
     /// <summary>
+    /// The event for returning log messages.
+    /// </summary>
+    public event EventHandler<string>? LogEvent;
+
+    /// <summary>
     /// Emulates the timer event
     /// </summary>
     public void FireTimerEvent()
@@ -45,4 +50,17 @@ public class TmrStub(ISimpleLogger logger) : ITimerService
     /// </summary>
     public void Resume()
         => _logger.AddEvent(LogEventClass.Timer, LogEventMethod.Resume);
+
+    /// <summary>
+    /// Sets the system time.
+    /// </summary>
+    /// <param name="utcTime">The time to set.</param>
+    public void SetSystemTime(DateTime utcTime)
+    {
+        _logger.AddEvent(LogEventClass.Timer,
+            LogEventMethod.SetSystemTime,
+            $"Time: {utcTime}");
+
+        LogEvent?.Invoke(this, $"SetSystemTime Stub: {utcTime}");
+    }
 }

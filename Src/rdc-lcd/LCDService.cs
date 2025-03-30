@@ -246,9 +246,6 @@ public class LCDService : ILCDService
 
         // Prepare the LCD display.
         Clear();
-
-        // Display the custom character (🕒) for the clock symbol.
-        Write(0, 0, "\x01");
     }
     #endregion
 }

@@ -60,6 +60,12 @@ public class DBClock : IDBClock
 
         // Prepare the LCD display.
         lcd.PrepareDisplay();
+
+        ntp.LogEvent += (sender, msg) => OnLogEvent(msg);
+        tmr.LogEvent += (sender, msg) => OnLogEvent(msg);
+        // TODO: lcd.LogEvent += (sender, msg) => OnLogEvent(msg);
+        // TODO: rtc.LogEvent += (sender, msg) => OnLogEvent(msg);
+        // TODO: sch.LogEvent += (sender, msg) => OnLogEvent(msg);
     }
     #endregion
 
@@ -85,6 +91,7 @@ public class DBClock : IDBClock
         TimeZoneInfo.ClearCachedData();
         var tz = TimeZoneInfo.Local;
 
+        lcd.Write(0, 0, "\x01");
         lcd.Write(0, 1, $"{time:yyyy.MM.dd HH:mm:ss}");
 
         if (time.Second % 10 == 0)
@@ -118,6 +125,21 @@ public class DBClock : IDBClock
 
         Console.WriteLine($"Time: {time:yyyy.MM.dd HH:mm:ss}  Temperature: {rtc.ReadTemperature()}°C");
     }
+
+    /// <summary>
+    /// Handles the log event.
+    /// </summary>
+    /// <param name="msg">The log message.</param>
+    private void OnLogEvent(string msg)
+    {
+        // Cut the message to 20 characters.
+        msg = msg.Length > 20 ? msg[..20] : msg;
+
+        // Display the message on the LCD display.
+        lcd.Write(3, 0, msg.PadRight(20));
+        Thread.Sleep(2000);
+        lcd.Write(3, 0, " ".PadRight(20));
+    }
     #endregion
 
 
@@ -147,11 +169,62 @@ public class DBClock : IDBClock
     /// </remarks>
     public void Start()
     {
-        // Get the current network time and set it on the RTC module.
-        DateTime networkTime = ntp.GetNetworkTime();
-        rtc.WriteTime(networkTime);
+        // Get, if possible, the current network time and set it on the RTC module.
+        // Than, set the RTC time to the current system time.
+        SyncSystemTime(true);
 
         Resume();
+    }
+
+    /// <summary>
+    /// Synchronizes the RTC time 
+    // and the system time with 
+    // the network time.
+    /// </summary>
+    /// <param name="withNetworkTime">Indicates 
+    // whether to synchronize the system time 
+    // with the network time.</param>
+    public void SyncSystemTime(bool withNetworkTime)
+    {
+        lcd.Clear();
+
+        lcd.Write(0, 0, $"Sync Sys Time ({(withNetworkTime ? "NTP" : "RTC")})");
+
+        if (withNetworkTime)
+        {
+            // Get the current network time and set it on the RTC module.
+            lcd.Write(1, 0, "Get Network Time...");
+            if (ntp.GetNetworkTime(out DateTime networkTime))
+            {
+                // We must set time it as soon as possible, 
+                // because time is running.
+                lcd.Write(3, 0, "Set RTC Time...");
+                rtc.WriteTime(networkTime);
+                lcd.Write(2, 0, $"{networkTime:yyyy.MM.dd HH:mm:ss}");
+                Thread.Sleep(3000);
+            }
+            else
+            {
+                lcd.Write(2, 0, "NTP Error");
+                Thread.Sleep(3000);
+            }
+
+            // Clear the bottom lines of the LCD display.
+            lcd.Write(1, 0, " ".PadRight(20));
+            lcd.Write(2, 0, " ".PadRight(20));
+            lcd.Write(3, 0, " ".PadRight(20));
+        }
+
+        lcd.Write(1, 0, "Get RTC Time...");
+        DateTime dt = rtc.ReadTime();
+
+        lcd.Write(3, 0, "Set System Time...");
+        tmr.SetSystemTime(dt);
+        lcd.Write(2, 0, $"{dt:yyyy.MM.dd HH:mm:ss}");
+
+        Thread.Sleep(5000);
+
+        lcd.Clear();
     }
 
     /// <summary>
