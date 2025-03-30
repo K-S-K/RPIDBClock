@@ -30,6 +30,10 @@ public class RTCService : IRTCService
     public RTCService(byte deviceAddress)
     {
         _rtc = new DS3231(deviceAddress);
+
+        // Handle log events from the RTC device.
+        // This can be used to log messages or errors.
+        _rtc.LogEvent += (sender, msg) => Console.WriteLine(msg);
     }
     #endregion
 
