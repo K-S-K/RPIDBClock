@@ -34,6 +34,29 @@ public interface ILCDService
     void Write(int row, int col, string text);
 
     /// <summary>
+    /// Writes the current date to the LCD display.
+    /// </summary>
+    /// <param name="date">The date to be written.</param>
+    /// <param name="row">The row index of the cursor position.</param>
+    void WriteDateTime(DateTime time, int row = 0);
+
+    /// <summary>
+    /// Writes the current temperature to the LCD display.
+    /// </summary>
+    /// <param name="temp">The temperature to be written.</param>
+    void WriteTemperature(double temp);
+
+    /// <summary>
+    /// Writes the current time zone to the LCD display.
+    /// </summary>
+    void WriteTimeZone();
+
+    /// <summary>
+    /// Writes a log event message to the LCD display.
+    /// </summary>
+    void WriteLogEvent(string msg);
+
+    /// <summary>
     /// Creates a custom character for the LCD display at the specified location using the provided character map.
     /// </summary>
     /// <param name="location">The location where the custom character will be stored (0-7).</param>
@@ -59,9 +82,9 @@ public interface ILCDService
     ///    0b00000,
     ///    0b00000
     ///    };
-    ///    lcd.CreateCustomCharacter(0, degSymbol);
-    ///    lcd.Write(1, 18, "\x00");  // Display the custom character (°)
-    ///    lcd.Write(1, 19, "C");  // Display the temperature unit (C)
+    ///    CreateCustomCharacter(0, degSymbol);
+    ///    Write(1, 18, "\x00");  // Display the custom character (°)
+    ///    Write(1, 19, "C");  // Display the temperature unit (C)
     /// }
     /// </code>
     /// </example>

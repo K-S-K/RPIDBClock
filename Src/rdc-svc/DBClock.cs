@@ -61,11 +61,10 @@ public class DBClock : IDBClock
         // Prepare the LCD display.
         lcd.PrepareDisplay();
 
-        ntp.LogEvent += (sender, msg) => OnLogEvent(msg);
-        tmr.LogEvent += (sender, msg) => OnLogEvent(msg);
-        // TODO: lcd.LogEvent += (sender, msg) => OnLogEvent(msg);
-        // TODO: rtc.LogEvent += (sender, msg) => OnLogEvent(msg);
-        // TODO: sch.LogEvent += (sender, msg) => OnLogEvent(msg);
+        ntp.LogEvent += (sender, msg) => lcd?.WriteLogEvent(msg);
+        tmr.LogEvent += (sender, msg) => lcd?.WriteLogEvent(msg);
+        // TODO: rtc.LogEvent += (sender, msg) => lcd?.WriteLogEvent(msg);
+        // TODO: sch.LogEvent += (sender, msg) => lcd?.WriteLogEvent(msg);
     }
     #endregion
 
@@ -88,24 +87,23 @@ public class DBClock : IDBClock
 
         double temp = double.Round(rtc.ReadTemperature(), 1, MidpointRounding.ToEven);
 
-        TimeZoneInfo.ClearCachedData();
-        var tz = TimeZoneInfo.Local;
-
-        lcd.Write(0, 0, "\x01");
-        lcd.Write(0, 1, $"{time:yyyy.MM.dd HH:mm:ss}");
 
         if (time.Second % 10 == 0)
         {
-            lcd.Write(1, 0, "\x02");
-            lcd.Write(1, 1, $"Temperature: {temp:F1} C");
-            lcd.Write(1, 18, "\x00");
+            lcd.WriteTemperature(temp);
+            Thread.Sleep(2000);
+            // lcd.WriteTimeZone();
+            // Thread.Sleep(2000);
         }
         else
         {
-            //lcd.Write(1, 0, $" LU Hbf -> HD Hbf   ");
-            lcd.Write(1, 0, $" Ludw.Hbf - Heid.Hbf");
+            // Write the current date and time to the LCD display.
+            lcd.WriteDateTime(time);
         }
 
+        //lcd.Write(1, 0, $" LU Hbf -> HD Hbf   ");
+        lcd.Write(1, 0, "\x05");
+        lcd.Write(1, 1, $"Ludw.Hbf - Heid.Hbf");
 
         //*
         if (flights.Count > 0)
@@ -119,26 +117,10 @@ public class DBClock : IDBClock
         }
         if (flights.Count == 0)
         {
-            lcd.Write(2, 1, $"{tz.Id,-19}");
         }
         //*/
 
         Console.WriteLine($"Time: {time:yyyy.MM.dd HH:mm:ss}  Temperature: {rtc.ReadTemperature()}°C");
-    }
-
-    /// <summary>
-    /// Handles the log event.
-    /// </summary>
-    /// <param name="msg">The log message.</param>
-    private void OnLogEvent(string msg)
-    {
-        // Cut the message to 20 characters.
-        msg = msg.Length > 20 ? msg[..20] : msg;
-
-        // Display the message on the LCD display.
-        lcd.Write(3, 0, msg.PadRight(20));
-        Thread.Sleep(2000);
-        lcd.Write(3, 0, " ".PadRight(20));
     }
     #endregion
 
@@ -198,9 +180,9 @@ public class DBClock : IDBClock
             {
                 // We must set time it as soon as possible, 
                 // because time is running.
-                lcd.Write(3, 0, "Set RTC Time...");
+                lcd.Write(2, 0, "Set RTC Time...");
+                lcd.WriteDateTime(networkTime, 3);
                 rtc.WriteTime(networkTime);
-                lcd.Write(2, 0, $"{networkTime:yyyy.MM.dd HH:mm:ss}");
                 Thread.Sleep(3000);
             }
             else
@@ -218,9 +200,9 @@ public class DBClock : IDBClock
         lcd.Write(1, 0, "Get RTC Time...");
         DateTime dt = rtc.ReadTime();
 
-        lcd.Write(3, 0, "Set System Time...");
+        lcd.Write(2, 0, "Set System Time...");
         tmr.SetSystemTime(dt);
-        lcd.Write(2, 0, $"{dt:yyyy.MM.dd HH:mm:ss}");
+        lcd.WriteDateTime(dt, 3);
 
         Thread.Sleep(5000);
 

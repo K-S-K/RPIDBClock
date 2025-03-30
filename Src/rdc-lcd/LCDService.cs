@@ -45,6 +45,75 @@ public class LCDService : ILCDService
     }
 
     /// <summary>
+    /// Writes the current date to the LCD display.
+    /// </summary>
+    /// <param name="date">The date to be written.</param>
+    /// <param name="row">The row index of the cursor position.</param>
+    public void WriteDateTime(DateTime time, int row = 0)
+    {
+        // Format the date and time as a string.
+        string dateTimeString = $"{time:yyyy.MM.dd HH:mm:ss}";
+
+        // Write the date and time to the LCD display.
+        // The first writing symbol is a custom character (0x01) for the clock symbol.
+        // The second writing string is the formatted date and time string.
+
+        if (row == 0)
+        {
+            Write(0, 0, "\x01");
+            Write(0, 1, dateTimeString);
+        }
+        else
+        {
+            Write(row, 0, $" {dateTimeString}");
+        }
+    }
+
+    /// <summary>
+    /// Writes the current temperature to the LCD display.
+    /// </summary>
+    /// <param name="temp">The temperature to be written.</param>
+    public void WriteTemperature(double temp)
+    {
+        // Write the temperature to the LCD display.
+        // The first writing symbol is a custom character (0x00) for the temperature symbol.
+        // The second writing string is the formatted temperature string.
+        // The third writing symbol is a custom character (0x02) for the degree symbol.
+
+        Write(0, 0, "\x02");
+        Write(0, 1, $"Temperature: {temp:F1} C");
+        Write(0, 18, "\x00");
+    }
+
+    /// <summary>
+    /// Writes the current time zone to the LCD display.
+    /// </summary>
+    public void WriteTimeZone()
+    {
+        TimeZoneInfo.ClearCachedData();
+        var tz = TimeZoneInfo.Local;
+
+        // The first writing symbol is a custom character (0x04) for the earth symbol.
+        // The second writing string is the formatted time zone string.
+        Write(0, 0, "\x04");
+        Write(0, 1, $"{tz.Id,-19}");
+    }
+
+    /// <summary>
+    /// Writes a log event message to the LCD display.
+    /// </summary>
+    public void WriteLogEvent(string msg)
+    {
+        // Cut the message to 20 characters.
+        msg = msg.Length > 20 ? msg[..20] : msg;
+
+        // Display the message on the LCD display.
+        Write(3, 0, msg.PadRight(20));
+        Thread.Sleep(2000);
+        Write(3, 0, " ".PadRight(20));
+    }
+
+    /// <summary>
     /// Writes the specified text to the LCD display at the specified location.
     /// </summary>
     /// <param name="row">The row index of the cursor position.</param>
@@ -103,9 +172,9 @@ public class LCDService : ILCDService
     ///    0b00000,
     ///    0b00000
     ///    };
-    ///    lcd.CreateCustomCharacter(0, degSymbol);
-    ///    lcd.Write(1, 18, "\x00");  // Display the custom character (°)
-    ///    lcd.Write(1, 19, "C");  // Display the temperature unit (C)
+    ///    CreateCustomCharacter(0, degSymbol);
+    ///    Write(1, 18, "\x00");  // Display the custom character (°)
+    ///    Write(1, 19, "C");  // Display the temperature unit (C)
     /// }
     /// </code>
     /// </example>
@@ -242,6 +311,20 @@ public class LCDService : ILCDService
             0b00000
         ];
         CreateCustomCharacter(4, earthSymbol);
+
+        // Create a custom character for the train symbol (🚆).
+        byte[] trainSymbol =
+        [
+            0b01110,
+            0b00100,
+            0b01110,
+            0b10101,
+            0b10101,
+            0b11111,
+            0b01110,
+            0b01010
+        ];
+        CreateCustomCharacter(5, trainSymbol);
 
 
         // Prepare the LCD display.
