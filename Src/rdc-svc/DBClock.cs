@@ -119,8 +119,6 @@ public class DBClock : IDBClock
         {
         }
         //*/
-
-        Console.WriteLine($"Time: {time:yyyy.MM.dd HH:mm:ss}  Temperature: {rtc.ReadTemperature()}°C");
     }
     #endregion
 
@@ -207,6 +205,8 @@ public class DBClock : IDBClock
         Thread.Sleep(5000);
 
         lcd.Clear();
+
+        Console.WriteLine($"Time: {rtc.ReadTime():yyyy.MM.dd HH:mm:ss}  Temperature: {rtc.ReadTemperature()}°C");
     }
 
     /// <summary>

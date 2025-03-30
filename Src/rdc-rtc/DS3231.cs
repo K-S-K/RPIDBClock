@@ -32,6 +32,11 @@ public class DS3231 : IDisposable
     private object _sync = new();
     #endregion
 
+    /// <summary>
+    /// The event for returning log messages.
+    /// </summary>
+    public event EventHandler<string>? LogEvent;
+
 
     #region -> Constructors
     /// <summary>
@@ -75,17 +80,27 @@ public class DS3231 : IDisposable
         lock (_sync)
         {
             Span<byte> data = stackalloc byte[7];
+
             _device.WriteByte(TIME_REG);
             _device.Read(data);
-            return new DateTime(
-                BcdToDec(data[6]) + 2000, // Year
-                BcdToDec(data[5]), // Month
-                BcdToDec(data[4]), // Day
-                BcdToDec(data[2]), // Hour
-                BcdToDec(data[1]), // Minute
-                BcdToDec(data[0]), // Second
-                DateTimeKind.Utc
-            );
+
+            // Log the time data for debugging purposes.
+            LogEvent?.Invoke(this, $"Get Time Data: {data[0]:X2} {data[1]:X2} {data[2]:X2} {data[3]:X2} {data[4]:X2} {data[5]:X2} {data[6]:X2}");
+
+            DateTime dt = new DateTime(
+                            BcdToDec(data[6]) + 2000, // Year
+                            BcdToDec(data[5]), // Month
+                            BcdToDec(data[4]), // Day
+                            BcdToDec(data[2]), // Hour
+                            BcdToDec(data[1]), // Minute
+                            BcdToDec(data[0]), // Second
+                            DateTimeKind.Utc
+                        );
+
+            // Log the time for debugging purposes.
+            LogEvent?.Invoke(this, $"Get Time Value: {dt:yyyy-MM-dd HH:mm:ss}");
+
+            return dt;
         }
     }
 
@@ -110,6 +125,11 @@ public class DS3231 : IDisposable
             data[5] = DecToBcd(dateTime.Day);
             data[6] = DecToBcd(dateTime.Month);
             data[7] = DecToBcd(dateTime.Year - 2000);
+
+            // Log the time for debugging purposes.
+            LogEvent?.Invoke(this, $"Set Time Value: {dateTime:yyyy-MM-dd HH:mm:ss}");
+            // Log the time data for debugging purposes.
+            LogEvent?.Invoke(this, $"Set Time Data: {data[0]:X2} {data[1]:X2} {data[2]:X2} {data[3]:X2} {data[4]:X2} {data[5]:X2} {data[6]:X2} {data[7]:X2}");
 
             // Write the time data to the RTC module.
             _device.Write(data);
