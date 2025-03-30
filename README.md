@@ -54,6 +54,6 @@ sudo ufw status
 #### Open port (for instance, 5000) for incoming connections
 
 ``` bash
-sudo ufw allow 5000
+sudo ufw allow 5020
 sudo ufw show added
 ```
