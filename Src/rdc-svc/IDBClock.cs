@@ -8,10 +8,21 @@ public interface IDBClock : IDisposable
     void Prepare();
 
     /// <summary>
+    /// Synchronizes the RTC time 
+    // and the system time with 
+    // the network time.
+    /// </summary>
+    /// <param name="withNetworkTime">Indicates 
+    // whether to synchronize the system time 
+    // with the network time.</param>
+    void SyncSystemTime(bool withNetworkTime);
+
+    /// <summary>
     /// Starts the clock.
     /// </summary>
     /// <remarks>
-    /// This method gets the current network time and sets it on the RTC module.
+    /// This method gets the current network 
+    // time and sets it on the RTC module.
     /// It also resumes the timer.
     /// </remarks>
     void Start();
