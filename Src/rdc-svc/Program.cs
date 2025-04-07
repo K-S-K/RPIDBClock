@@ -68,10 +68,8 @@ internal class Program
                 .GetValue<string>("HostSettings:Url") ?? "http://*:5000";
 
         // Configure the app to use the specified URL
+        Console.WriteLine($"Listening on {hostUrl}");
         app.Urls.Add(hostUrl);
-
-        // Open the port for incoming connections
-        OpenPortForIncomingConnections(hostUrl);
 
         // Resolve and start DBClock service.
         IDBClock clock = app.Services.GetRequiredService<IDBClock>();
