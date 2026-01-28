@@ -1,18 +1,28 @@
 # Deployment
 
-There are two different deployment types implemented for the project
+Two different deployment types are implemented for this project. 
+- Source-code deployment is intended for development and experimentation (requires .NET SDK).
+- Binary deployment is intended for stable, repeatable production use (requires .NET Runtime or SDK).
+
+In this project, “production deployment” means running the clock as a long-lived systemd service on the target Raspberry Pi.
+
+Note: Before deployment, assume that:
+- .NET runtime and/or SDK is installed on the target
+- user has permission to manage the service
+- systemd is available and configured
+- SSH access is configured
 
 ## Deployment as source code to the target machine
 
-This purpose can be achieved by the only one bash script.
+This purpose can be achieved by a single bash script.
 
-If you need to deploy Clock as source code to the target Raspberry PI, you should use the script [deploy-rpi-as-source.sh](../../Src/deploy-rpi-as-source.sh) located at the [Src](../../Src/) directory of the project. This script should be executed without any additional parameters.
+If you need to deploy Clock as source code to the target Raspberry Pi, you should use the script [deploy-rpi-as-source.sh](../../Src/deploy-rpi-as-source.sh) located at the [Src](../../Src/) directory of the project. This script should be executed without any additional parameters.
 
 It would be necessary to change the following constants in the script due to the target environment configuration:
 
 - the IP address of the target Raspberry PI machine.
 - the user name of the account at the target machine.
-- the target directory on the target machine. This directory is intentionally different from the binary deployment directory - to separate these directories and avoid mixing experiments with regular work.
+- the target directory on the target machine. This directory is intentionally different from the binary deployment directory to separate them and avoid mixing experiments with regular work.
 
 ## Deployment as binary
 
@@ -21,9 +31,9 @@ It would be necessary to change the following constants in the script due to the
 The production deployment has several phases:
 
 - Building from the source code to the production directory for the target machine CPU architecture.
-- Copying from the production directory of the developer machine or build server machine to the staging directory of the target machine. The staging is applied here to reduce downtime.
-- After the copying to the staging directory, the old version of the service should be stopped at the target machine, if one is running.
-- After the old version of the service is stopped, the content of the binary directory should be cleaned up, and the content of the staging directory should be placed in the binary directory.
+- Copying from the production directory of the developer machine or build server machine to the staging directory of the target machine. **The staging is applied here to reduce downtime**.
+- After the copying to the staging directory, the old version of the service is stopped (if running).
+- After the old version of the service is stopped, the content of the binary directory is cleaned up, and the content of the staging directory is placed in the binary directory.
 - Now we're ready to execute the new version of the service.
 
 This algorithm is implemented using three scripts.
@@ -46,3 +56,5 @@ For the production deployment, we have three bash scripts in the project:
 - Updating script [prod-update.sh](../../Src/prod-update.sh). This script sets all necessary parameters and executes two other scripts. It contains two internal parameters that should be adopted for the particular environment:
 - - Target Runtime Identifier (RID): linux-x64, osx-arm64, win-x64, etc.
 - - Publish directory - the directory where the production binary will be built to.
+ 
+These values are intentionally kept inside the scripts to keep the deployment flow simple and explicit for a single-device setup.
