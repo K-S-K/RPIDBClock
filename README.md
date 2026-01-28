@@ -4,7 +4,9 @@
 
 ### What is this all about
 
-**RPIDBClock** is a thoughtfully crafted Raspberry Pi project written in **.NET** that turns a simple LCD display into a smart desk clock with **real-time Deutsche Bahn departures**. It’s not just a clock — it’s a personal mobility companion designed for people who should be in sync with the train schedule. 
+**RPIDBClock** is a thoughtfully crafted Raspberry Pi project written in **.NET** that turns a simple LCD display into a smart desk clock with **real-time Deutsche Bahn departures**. It’s not just a clock — it’s a personal mobility companion designed for people who need to stay in sync with the train schedule.
+
+This project may be interesting for engineers exploring .NET on Linux, Raspberry Pi–based automation, or simply looking for a small but complete hardware-software system.
 
 **Technically**, it is the Raspberry PI, connected to the DS3231 RTC module and the HD44780 LCD module with four lines by twenty symbols each.
 
@@ -21,7 +23,7 @@ After getting the first working version, I can say that this project shows that 
 Here are the theses I've made before the implementation as an initial concept. The product should:
 - Display current date and time on the symbol LCD using a DS3231 hardware RTC
 - Show the next two train departures from a personal schedule
-- Has a clean .NET design with dependency injection and unit tests
+- Have a clean .NET design with dependency injection and unit tests
 - Works as a Linux service on Raspberry Pi
 
 ### Technical Brief on the result
@@ -33,7 +35,7 @@ Built to explore how expressive and maintainable .NET can be in automation and e
 - Headless deployment workflows with simple bash scripts. The application can be built on the developer machine, deployed to the RPI via SSH, and executed as a service. For this purpose, the set of bash scripts was developed inside the project.
 - When the service is executed, it updates the RTC's time from an NTP server (if the network is available), then periodically retrieves the RTC's time to update the display content.
 - It has a hardcoded schedule of the trains I need to monitor for the commute, and displays the closest trains I can reach from my workplace.
-- For the project, I've used a very old Raspberry Pi 3B (just because I own it), so it is more than possible with a modern one, and I expect it to have a shorter startup time and faster remote debugging.
+- For this project, I used an older Raspberry Pi 3B (just because I own it), so it is more than possible with a modern one, and I expect it to have a shorter startup time and faster remote debugging.
 
 ### Future Development Directions
 - Add a WEB UI for configuring.
