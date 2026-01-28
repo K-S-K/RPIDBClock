@@ -16,13 +16,15 @@ Initially, I built this clock for my desk because I was tired of missing trains 
 
 After getting the first working version, I can say that this project shows that .NET on Raspberry Pi isn’t just possible — it’s a pleasure to work with for IoT and automation tasks.
 
-### Project Features
-	•	Displays current date and time using a DS3231 hardware RTC
-	•	Shows the next two Deutsche Bahn train departures from a personal schedule
-	•	Clean .NET design with dependency injection and unit tests
-	•	Runs as a Linux service on Raspberry Pi
+### Project Features (Initial Requirements)
 
-### Technical Brief
+Here are the theses I've made before the implementation as an initial concept. The product should:
+- Display current date and time on the symbol LCD using a DS3231 hardware RTC
+- Show the next two train departures from a personal schedule
+- Has a clean .NET design with dependency injection and unit tests
+- Works as a Linux service on Raspberry Pi
+
+### Technical Brief on the result
 
 Built to explore how expressive and maintainable .NET can be in automation and embedded scenarios, RPIDBClock demonstrates:
 - Reliable real-time timekeeping using a DS3231 RTC module.
