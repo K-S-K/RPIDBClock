@@ -2,13 +2,13 @@
 
 ## A .NET Raspberry PI Commuter Desk Clock
 
-![Common View](Doc/Images/Fig_00_Common_View.jpg)
-
 ### What is this all about
 
 **RPIDBClock** is a thoughtfully crafted Raspberry Pi project written in **.NET** that turns a simple LCD display into a smart desk clock with **real-time Deutsche Bahn departures**. It’s not just a clock — it’s a personal mobility companion designed for people who should be in sync with the train schedule. 
 
 **Technically**, it is the Raspberry PI, connected to the DS3231 RTC module and the HD44780 LCD module with four lines by twenty symbols each.
+
+![Common View](Doc/Images/Fig_00_Common_View.jpg)
 
 ### Motivation Story
 
