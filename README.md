@@ -12,7 +12,7 @@
 
 # Motivation Story
 
-Initially, I built this clock for my desk because I was tired of missing trains after long coding hours. I wanted something that speaks my language — clear, precise, and human-readable — and also have it displayed on the dedicated display I like to see.
+Initially, I built this clock for my desk because I was tired of missing trains after long coding hours. I wanted a reminder that speaks my language — clear, precise, and human-readable — and also have it displayed on the dedicated display I like to see.
 
 After getting the first working version, I can say that this project shows that .NET on Raspberry Pi isn’t just possible — it’s a pleasure to work with for IoT and automation tasks.
 
