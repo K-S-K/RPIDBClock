@@ -19,8 +19,8 @@ After getting the first working version, I can say that this project shows that 
 ### Project Features
 	•	Displays current date and time using a DS3231 hardware RTC
 	•	Shows the next two Deutsche Bahn train departures from a personal schedule
-	•	Runs as a Linux service on Raspberry Pi
 	•	Clean .NET design with dependency injection and unit tests
+	•	Runs as a Linux service on Raspberry Pi
 
 ### Technical Results
 
