@@ -22,26 +22,26 @@ After getting the first working version, I can say that this project shows that 
 	•	Clean .NET design with dependency injection and unit tests
 	•	Runs as a Linux service on Raspberry Pi
 
-### Technical Results
+### Technical Brief
 
 Built to explore how expressive and maintainable .NET can be in automation and embedded scenarios, RPIDBClock demonstrates:
 - Reliable real-time timekeeping using a DS3231 RTC module.
 - Elegant hardware interaction via I2C (LCD and RTC).
 - Clean architecture with dependency injection, testability, and remote debugging.
 - Headless deployment workflows with simple bash scripts. The application can be built on the developer machine, deployed to the RPI via SSH, and executed as a service. For this purpose, the set of bash scripts was developed inside the project.
+- When the service is executed, it updates the RTC's time from an NTP server (if the network is available), then periodically retrieves the RTC's time to update the display content.
+- It has a hardcoded schedule of the trains I need to monitor for the commute, and displays the closest trains I can reach from my workplace.
+- For the project, I've used a very old Raspberry Pi 3B (just because I own it), so it is more than possible with a modern one, and I expect it to have a shorter startup time and faster remote debugging.
 
 ### Future Development Directions
 - Add a WEB UI for configuring.
 - Add PWM brightness control.
-- Find out how to reliably integrate with the actual live train schedule with train delays.
+- Find out how to reliably integrate with the actual live train schedule with train delays. Because it's a shame to have a hardcoded schedule. Currently, I limited it by filtering one of the DB-scheduling service responses.
 - Add an infra-red human presence detector to turn off the display backlight when nobody is there to see it.
+- Add a morning-alarm-clock functionality, which will postpone the wake-up signal if the train is cancelled or significantly late.
 
-
-When the application is executed, it updates the RTC's time from an NTP server (if the network is available), then periodically retrieves the RTC's time. It has a hardcoded schedule of the trains I need to monitor for the commute, and displays the closest trains I can reach from my workplace. Yes, that's a shame to have it hardcoded. Currently, I limited it by filtering one of the DB-scheduling service responses. Maybe later I'll make it updateable on its own, but not right now, because the average time for a tram commute is shorter than for a train commute, so I don't use it since I changed my commute path.
-
-The project's architecture uses Dependency Injection. It allows me to experiment with different configurations and to use stubs for some classes to play with others in unit tests, which I added to the project to protect already implemented logic from corruption during refactoring and optimization activities.
-
-For the project, I've used a very old Raspberry Pi 3B (just because I own it), so it is possible with a modern one, and I expect it to have a shorter startup time.
+### Usage Experience
+It is nice and convenient to have this old-school display shining on the desk.
 
 ## Documentation reference
 
