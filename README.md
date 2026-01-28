@@ -21,6 +21,7 @@ After getting the first working version, I can say that this project shows that 
 ### Project Features (Initial Requirements)
 
 Here are the theses I've made before the implementation as an initial concept. The product should:
+
 - Display current date and time on the symbol LCD using a DS3231 hardware RTC
 - Show the next two train departures from a personal schedule
 - Have a clean .NET design with dependency injection and unit tests
@@ -29,6 +30,7 @@ Here are the theses I've made before the implementation as an initial concept. T
 ### Technical Brief on the result
 
 Built to explore how expressive and maintainable .NET can be in automation and embedded scenarios, RPIDBClock demonstrates:
+
 - Reliable real-time timekeeping using a DS3231 RTC module.
 - Elegant hardware interaction via I2C (LCD and RTC).
 - Clean architecture with dependency injection, testability, and remote debugging.
@@ -38,6 +40,7 @@ Built to explore how expressive and maintainable .NET can be in automation and e
 - For this project, I used an older Raspberry Pi 3B (just because I own it), so it is more than possible with a modern one, and I expect it to have a shorter startup time and faster remote debugging.
 
 ### Future Development Directions
+
 - Add a WEB UI for configuring.
 - Add PWM brightness control.
 - Find out how to reliably integrate with the actual live train schedule with train delays. Because it's a shame to have a hardcoded schedule. Currently, I limited it by filtering one of the DB-scheduling service responses.
@@ -45,9 +48,13 @@ Built to explore how expressive and maintainable .NET can be in automation and e
 - Add a morning-alarm-clock functionality, which will postpone the wake-up signal if the train is cancelled or significantly late.
 
 ### Usage Experience
+
 It is nice and convenient to have this old-school display shining on the desk.
 
 ## Documentation reference
+
+- [Deployment procedure](./Doc/Deploymment/Readme.md)
+The description of the deployment procedure in two variants - for debugging and for production. Deployment is script-driven and ready for the CI-CD automation.
 
 - [Some useful command line spells](Doc/Cmd/Readme.md)
 Just to have a place for copy-paste from, and not to type it every time.
@@ -57,3 +64,5 @@ This is a process separate from software development itself, which warrants some
 
 - [Raw research documentation on the train schedule provider quiring](Doc/MyVRN/Readme.md)
 This is the most difficult and fragile part of the project, at least because there is no warranty of the data provider's format stability. To do this part seriously, we should be somehow connected to the data provider organization to obtain the necessary permissions and documentation for proper use of the service.
+
+All bash commands described in the documentation are tested on MacOS with Homebrew shell. For different operation systems they probably need to be adopted.
