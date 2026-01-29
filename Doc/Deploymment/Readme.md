@@ -47,14 +47,14 @@ This section describes the responsibility borders between scripts and some local
 For the production deployment, we have three bash scripts in the project:
 
 - Building script [prod-build.sh](../../Src/prod-build.sh). This script builds all source code into all binary code. It requires two input parameters:
-- - Target Runtime Identifier (RID): linux-x64, osx-arm64, win-x64, etc.
+- - Target Runtime Identifier (RID): **linux-arm64** for Raspberry Pi, for other systems it can be linux-x64, osx-arm64, win-x64, etc.
 - - Publish directory - the directory where the production binary will be built to.
 - Deployment script [prod-deploy.sh](../../Src/prod-deploy.sh). This script copies the ready-to-run production files to the target machine's staging directory. Then, the script stops the existing service if it is working. Then it clears the binary directory. Then it copies the staging directory content to the binary directory. Then it starts the service. This script has one input parameter: the publish directory, the directory from which the production binary will be taken. Also, this script contains internal variables that should be changed to meet the particular environment:
 - - the IP address of the target Raspberry PI machine.
 - - the user name of the account at the target machine.
 - - the target directories at the target machine for staging and for execution.
 - Updating script [prod-update.sh](../../Src/prod-update.sh). This script sets all necessary parameters and executes two other scripts. It contains two internal parameters that should be adopted for the particular environment:
-- - Target Runtime Identifier (RID): linux-x64, osx-arm64, win-x64, etc.
+- - Target Runtime Identifier (RID): **linux-arm64** for Raspberry Pi, for other systems it can be linux-x64, osx-arm64, win-x64, etc.
 - - Publish directory - the directory where the production binary will be built to.
  
 These values are intentionally kept inside the scripts to keep the deployment flow simple and explicit for a single-device setup.
