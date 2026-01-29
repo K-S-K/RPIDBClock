@@ -54,6 +54,9 @@ It is nice and convenient to have this old-school display shining on the desk.
 
 ## Documentation reference
 
+- [Architecture description](./Doc/Desighn/Readme.md)
+The brief description of architecture decisions that were maid during the project implementation.
+
 - [Deployment procedure](./Doc/Deploymment/Readme.md)
 The description of the deployment procedure in two variants - for debugging and for production. Deployment is script-driven and ready for the CI-CD automation.
 
