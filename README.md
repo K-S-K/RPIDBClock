@@ -41,11 +41,12 @@ Built to explore how expressive and maintainable .NET can be in automation and e
 
 ### Future Development Directions
 
-- Add a WEB UI for configuring.
-- Add PWM brightness control.
+
+- Add PWM brightness control for the display, with a photo-resistor to comply with the environmental conditions.
 - Find out how to reliably integrate with the actual live train schedule with train delays. Because it's a shame to have a hardcoded schedule. Currently, I limited it by filtering one of the DB-scheduling service responses.
 - Add an infra-red human presence detector to turn off the display backlight when nobody is there to see it.
 - Add a morning-alarm-clock functionality, which will postpone the wake-up signal if the train is cancelled or significantly late.
+- Add a WEB UI for adjusting the brightness coefficients, alarm settings, and commute schedule parameters updating.
 
 ### Usage Experience
 
