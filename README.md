@@ -1,6 +1,6 @@
 # RPIDBClock
 
-## A .NET Raspberry PI Commuter Desk Clock
+## A .NET Raspberry Pi Commuter Desk Clock
 
 ### What is this all about
 
