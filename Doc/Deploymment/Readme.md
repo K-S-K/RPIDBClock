@@ -6,7 +6,7 @@ Two different deployment types are implemented for this project.
 
 In this project, “production deployment” means running the clock as a long-lived systemd service on the target Raspberry Pi.
 
-Note: Before deployment, assume that:
+**Note:** Before deployment, assume that:
 - .NET runtime and/or SDK is installed on the target
 - user has permission to manage the service
 - systemd is available and configured
