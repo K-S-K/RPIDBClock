@@ -1,19 +1,23 @@
 # The architecture
 
+## Abstract
+
+This structure provides a clear separation between domain logic, hardware abstraction, and infrastructure, allowing the application to be tested and executed with or without physical devices present.
+
 ## The solution contains several assemblies
 
-| Name  | Type     | Description                                  |
-|-------|----------|----------------------------------------------|
-|rdc-bas|library   |Common types                                  |
-|rdc-lcd|library   |Display-related types                         |
-|rdc-net|library   |Network connectivity                          |
-|rdc-rtc|library   |Runtime Clock                                 |
-|rdc-svc|executable|Entry point of service and some business logic|
-|rdc-xut|library   |XUnit Tests for business logic                |
+| Name  | Type     | Description                                      |
+|-------|----------|--------------------------------------------------|
+|rdc-bas|library   |Common types                                      |
+|rdc-lcd|library   |Display-related types                             |
+|rdc-net|library   |Network connectivity                              |
+|rdc-rtc|library   |Real-Time Clock (RTC)                             |
+|rdc-svc|executable|Entry point of the service and some business logic|
+|rdc-xut|library   |XUnit Tests for business logic                    |
 
-### Every device-related library contains following classes:
+### Every device-related library contains the following classes:
 
-- hardware-related driver-like wrapper around I2C API which maps domain-related data and commands to the hardware - related data and commands,
-- interface as an implementation-agnostic abstraction layer,
-- functional hardware-dependent implementation which implements the interface, and
-- hardware-independent stub to use in tests and in the working configurations without particular hardware installed.
+- hardware-oriented driver-like wrapper around the I2C API that maps domain concepts to low-level commands,
+- an interface defining an implementation-agnostic abstraction,
+- a functional hardware-dependent implementation, and
+- a hardware-independent stub used for tests or for configurations without physical hardware.
