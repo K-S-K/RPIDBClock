@@ -15,7 +15,7 @@ This structure provides a clear separation between domain logic, hardware abstra
 |rdc-svc|executable|Entry point of the service and some business logic|
 |rdc-xut|library   |XUnit Tests for business logic                    |
 
-### Every device-related library contains the following classes:
+### Every device-related library contains the following classes
 
 - hardware-oriented driver-like wrapper around the I2C API that maps domain concepts to low-level commands,
 - an interface defining an implementation-agnostic abstraction,

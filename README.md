@@ -69,4 +69,6 @@ This is a process separate from software development itself, which warrants some
 - [Raw research documentation on the train schedule provider quiring](Doc/MyVRN/Readme.md)
 This is the most difficult and fragile part of the project, at least because there is no warranty of the data provider's format stability. To do this part seriously, we should be somehow connected to the data provider organization to obtain the necessary permissions and documentation for proper use of the service.
 
+- [The formal article about the project](Doc/Readme.md) with description of purposes, architecture decisions involved, ans conclusions from the experiment results.
+
 All bash commands described in the documentation are tested on MacOS with Homebrew shell. For different operation systems they probably need to be adopted.

@@ -1,12 +1,14 @@
 # Deployment
 
-Two different deployment types are implemented for this project. 
+Two different deployment types are implemented for this project.
+
 - Source-code deployment is intended for development and experimentation (requires .NET SDK).
 - Binary deployment is intended for stable, repeatable production use (requires .NET Runtime or SDK).
 
 In this project, “production deployment” means running the clock as a long-lived systemd service on the target Raspberry Pi.
 
 **Note:** Before deployment, assume that:
+
 - .NET runtime and/or SDK is installed on the target
 - user has permission to manage the service
 - systemd is available and configured
@@ -56,5 +58,5 @@ For the production deployment, we have three bash scripts in the project:
 - Updating script [prod-update.sh](../../Src/prod-update.sh). This script sets all necessary parameters and executes two other scripts. It contains two internal parameters that should be adopted for the particular environment:
 - - Target Runtime Identifier (RID): **linux-arm64** for Raspberry Pi, for other systems it can be linux-x64, osx-arm64, win-x64, etc.
 - - Publish directory - the directory where the production binary will be built to.
- 
+
 These values are intentionally kept inside the scripts to keep the deployment flow simple and explicit for a single-device setup.
