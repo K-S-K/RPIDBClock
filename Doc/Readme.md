@@ -4,17 +4,17 @@ Keywords: .NET, Linux, Embedded, I2C, GPIO, Raspberry Pi, Dependency Injection, 
 
 ## Abstract
 
-In industrial hardware-related projects we were usually limited in tools of programming and configuring. Now days with modern hardware and software assets we have more agility to express our engineering ideas in more manageable, maintainable and explainable forms than it was in past. During this experiment I've made an attempt to apply the architectural approaches I use in the .NET - related part of software development industry to the simple embedded project.
+In industrial hardware-related projects, we are usually limited in the tools for programming and configuring. Nowadays, with modern hardware and software assets, we have more agility to express our engineering ideas in more manageable, maintainable, and explainable forms than we did in the past. During this experiment, I've attempted to apply the architectural approaches I use in the. NET-related part of the software development industry to a simple embedded project.
 
 ## Introduction
 
 Tooling decisions in industrial systems are rarely about fashion. They are about predictability, clarity, and long-term behavior under constraints.
 
-Tooling choices are usually conservative, And that's for good reasons: engineering traditions, well experienced approaches, certification, customer trust, and easy accessible service employee matter more than novelty. Nevertheless, new technologies grow and reach the condition when it is possible at least to try to apply them and see the result and make some conclusions. The experiment, discussed in this article was made to check whether .NET stack tools and approaches behave well at the hardware-adjacent domains.
+Tooling choices are usually conservative. And that's for good reasons: engineering traditions, well-experienced approaches, certification, customer trust, and easily accessible service employees matter more than novelty. Nevertheless, new technologies are advancing and reach a point where it is at least possible to try to apply them, see the results, and draw some conclusions. The experiment discussed in this article was conducted to determine whether .NET stack tools and approaches perform well in hardware-adjacent domains.
 
 During this small experiment, I built an embedded device using .NET on Linux, interacting directly with I2C peripherals. The visible result is a desk clock, but the purpose was different: to evaluate how modern .NET fits hardware-adjacent development and how architectural approaches from .NET can be translated to embedded systems.
 
-To evaluate how modern .NET behaves close to hardware, a small embedded Linux device was built. This device communicates directly with I2C peripherals using System.Device.Gpio. The visible result is a simple clock, but the focus was on validation rather than functionality.
+To evaluate how modern .NET behaves at the hardware level, a small embedded Linux device was built. This device communicates directly with I2C peripherals using System.Device.Gpio. The visible result is a simple clock, but the focus was on validation rather than functionality.
 
 (Picture)
 
@@ -22,25 +22,25 @@ To evaluate how modern .NET behaves close to hardware, a small embedded Linux de
 
 ### Hardware access from .NET
 
-The project uses the System.Device.Gpio library provided as a part od .NET ecosystem. It allows developer to deal with GPIO and I2C directly from managed code. At this project only the two following possibilities provided by the library were used:
+The project uses the System.Device.Gpio library provided as part of the .NET ecosystem. It allows developers to deal with GPIO and I2C directly from managed code. In this project, only the two following possibilities provided by the library were used:
 
 - Explicit GPIO control
 - I2C communication with byte-level access via I2cDevice class provided by the library
 
-Thanks to easy to use abstractions, the code of project remains readable while staying close to the hardware.
+Thanks to easy-to-use abstractions, the project's code remains readable while staying close to the hardware.
 
 ### Architecture decisions
 
 Even to this small device, I applied the internal structure familiar industrial principles:
 
 - Hardware access separated from business logic
-- The domain part (time control and scheduling) handled independently from presentation
-- Every hardware part has it's logical abstraction and its owh "service" in terms od DI
-- The business logic of the project is covered by unit tests, which uses stub-implemented abstractions hidden behind interfaces instead of real hardware which can be inaccessible at the developer machine
-- The clear and deterministic build procedure which can be automated by script
-- The clear and deterministic deployment process compatible with "Infrastructure as a software" concept
+- The domain part (time control and scheduling) is handled independently from the presentation at the UI
+- Every hardware part has its logical abstraction and its own "service" in terms of DI
+- The business logic of the project is covered by unit tests, which use stub-implemented abstractions hidden behind interfaces instead of real hardware, which can be inaccessible on the developer's machine
+- The clear and deterministic build procedure, which can be automated by a script
+- The clear and deterministic deployment process is compatible with the "Infrastructure as a software" concept
 
-Three last items ot this list allows to wrap the development process to CI-CD approach.
+The last three items on the list above allow us to wrap the development process into a CI/CD approach.
 
 ### Industrial approaches prototyping
 
@@ -48,11 +48,11 @@ In this project, .NET on embedded Linux was used to build a small device that co
 
 These constraints naturally led to an architecture with clear hardware abstraction, explicit system state, and deterministic execution flow — the same qualities expected in industrial edge devices.
 
-This made the system easier to reason about and would scale naturally to larger devices such as controllers or edge gateways.
+This made the system easier to reason about and naturally scaled to larger devices, such as controllers or edge gateways.
 
 ## Experiment Result Analysis
 
-The project output shows that the applied technology allows to fit the constraints are common in industrial devices like clear responsibility ownership and controlled data flow. The system continuously maintains state, integrates domain-related data, and runs predictably over time.
+The project output shows that the applied technology enables meeting the constraints common in industrial devices, such as clear responsibility ownership and controlled data flow. The system continuously maintains state, integrates domain-related data, and runs predictably over time.
 
 From this perspective, the project is less about the clock itself and more about validating an approach to small embedded systems.
 
