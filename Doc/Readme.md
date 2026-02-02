@@ -16,7 +16,7 @@ During this small experiment, I built an embedded device using .NET on Linux, in
 
 To evaluate how modern .NET behaves at the hardware level, a small embedded Linux device was built. This device communicates directly with I2C peripherals using System.Device.Gpio. The visible result is a simple clock, but the focus was on validation rather than functionality.
 
-(Picture)
+![Common View](Images/Fig_00_Common_View.jpg)
 
 ## Experiment
 
