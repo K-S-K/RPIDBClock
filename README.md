@@ -39,7 +39,7 @@ Built to explore how expressive and maintainable .NET can be in automation and e
 - It has a hardcoded schedule of the trains I need to monitor for the commute, and displays the closest trains I can reach from my workplace.
 - For this project, I used an older Raspberry Pi 3B (just because I own it), so it is more than possible with a modern one, and I expect it to have a shorter startup time and faster remote debugging.
 
-### Future Development Directions
+### Possible Future Development Directions
 
 
 - Add PWM brightness control for the display, with a photo-resistor to comply with the environmental conditions.
