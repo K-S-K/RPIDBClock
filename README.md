@@ -4,9 +4,9 @@
 
 ### What is this all about
 
-**RPIDBClock** is a thoughtfully crafted Raspberry Pi project written in **.NET** that turns a simple LCD display into a smart desk clock with **real-time Deutsche Bahn departures**. It’s not just a clock — it’s a personal mobility companion designed for people who need to stay in sync with the train schedule.
+**RPIDBClock** is a Raspberry Pi project written in **.NET** that turns a simple LCD display into a smart desk clock with **real-time Deutsche Bahn departures**. The idea was to create a clock that could help me stay in sync with the train schedule.
 
-This project may be interesting for engineers exploring .NET on Linux, Raspberry Pi–based automation, or simply looking for a small but complete hardware-software system.
+This project became my way to explore .NET possibilities on Linux–based computers through interactions with hardware connected via the I2C protocol.
 
 **Technically**, it is the Raspberry PI, connected to the DS3231 RTC module and the HD44780 LCD module with four lines by twenty symbols each.
 
@@ -55,10 +55,10 @@ It is nice and convenient to have this old-school display shining on the desk.
 ## Documentation reference
 
 - [Architecture description](./Doc/Desighn/Readme.md)
-The brief description of architecture decisions that were maid during the project implementation.
+The brief description of the architecture decisions that were made during the project implementation.
 
 - [Deployment procedure](./Doc/Deploymment/Readme.md)
-The description of the deployment procedure in two variants - for debugging and for production. Deployment is script-driven and ready for the CI-CD automation.
+The deployment procedure is described in two variants: for debugging and for production. Deployment is script-driven and ready for CI-CD automation.
 
 - [Some useful command line spells](Doc/Cmd/Readme.md)
 Just to have a place for copy-paste from, and not to type it every time.
@@ -69,6 +69,6 @@ This is a process separate from software development itself, which warrants some
 - [Raw research documentation on the train schedule provider quiring](Doc/MyVRN/Readme.md)
 This is the most difficult and fragile part of the project, at least because there is no warranty of the data provider's format stability. To do this part seriously, we should be somehow connected to the data provider organization to obtain the necessary permissions and documentation for proper use of the service.
 
-- [The formal article about the project](Doc/Readme.md) with description of purposes, architecture decisions involved, ans conclusions from the experiment results.
+- [The formal article about the project](Doc/Readme.md) with description of purposes, architecture decisions involved, and conclusions from the experiment results.
 
-All bash commands described in the documentation are tested on MacOS with Homebrew shell. For different operation systems they probably need to be adopted.
+All bash commands described in the documentation are tested on MacOS with Homebrew shell. For different operating systems, they probably need to be adapted.
